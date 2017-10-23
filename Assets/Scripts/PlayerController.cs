@@ -1,28 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 
 public class PlayerController : MonoBehaviour {
 
+    // publics
     public float upwardTrust;
     public float movementThrust;
 
-
+    // privates
     private Rigidbody _rigidbody;
 
-    // Use this for initialization
-    void Start() {
-
-        _rigidbody = this.GetComponent<Rigidbody>();
-
+    private void Start() {
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update() {
-
+    private void Update() {
         HandleMovement();
-
     }
 
     /**
@@ -30,9 +26,14 @@ public class PlayerController : MonoBehaviour {
      */
     private void HandleMovement() {
 
+
+        // rise
         if (Input.GetKey(KeyCode.Space)) {
             _rigidbody.AddForce(transform.up * upwardTrust * Time.deltaTime);
         }
+
+
+        //
         if (Input.GetKey(KeyCode.W)) {
             _rigidbody.AddForce(new Vector3(0, 0, -1) * movementThrust * Time.deltaTime);
         }
