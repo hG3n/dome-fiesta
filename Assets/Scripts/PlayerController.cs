@@ -33,17 +33,17 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKey(KeyCode.Space)) {
             _rigidbody.AddForce(transform.up * upwardTrust * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.W)) {
+        if (Input.GetKey(KeyCode.W)) {
             _rigidbody.AddForce(new Vector3(0, 0, -1) * movementThrust * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.S)) {
+        if (Input.GetKey(KeyCode.S)) {
             _rigidbody.AddForce(new Vector3(0, 0, 1) * movementThrust * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.A)) {
-            _rigidbody.AddForce(new Vector3(1, 0, 0) * movementThrust * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.D)) {
+        if (Input.GetKey(KeyCode.A)) {
             _rigidbody.AddForce(new Vector3(-1, 0, 0) * movementThrust * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            _rigidbody.AddForce(new Vector3(1, 0, 0) * movementThrust * Time.deltaTime);
         }
 
     }
