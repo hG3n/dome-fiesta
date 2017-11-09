@@ -14,6 +14,7 @@ public class player : MonoBehaviour {
     public bool ground;
     public float maxspeed;
     public int playernumber = 1;
+
     
     // Use this for initialization
 	void Start ()
@@ -24,8 +25,8 @@ public class player : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-
         Movement();
+        
 
         //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
         //rigid.AddRelativeForce(movement);
@@ -140,5 +141,6 @@ public class player : MonoBehaviour {
     {
         if (other.tag == "platform")
         { ground = false; }
+
     }
 }
