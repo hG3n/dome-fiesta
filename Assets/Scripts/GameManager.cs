@@ -7,8 +7,10 @@ public class GameManager : MonoBehaviour {
     //Team
     public List<GameObject> Teams;
     public List<GameObject> PlayerList;
+    public List<GameObject> BallList;
 
     public List<GameObject> PlayerSkins;
+    public List<GameObject> BallSkin;
 
     //Settings
 
@@ -95,6 +97,7 @@ public class GameManager : MonoBehaviour {
             Teams[lasthit].GetComponent<Team>().score += 1;
         }
         CheckScore();
+        ResetRound();
 
     }
 
@@ -112,13 +115,13 @@ public class GameManager : MonoBehaviour {
             if (tmp_team.score >= win_score)
             {
                 Debug.Log("Team " + tmp_team.teamname + " Wins");
-                Reset();
+                
             }
         }
     }
 
-    private void Reset()
+    private void ResetRound()
     {
-        
+        Instantiate(BallSkin[0],transform.position,transform.rotation);
     }
 }

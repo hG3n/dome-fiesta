@@ -18,6 +18,11 @@ public class Ball : MonoBehaviour {
     void Start ()
     {
         rigid = GetComponent<Rigidbody>();
+
+        float x= UnityEngine.Random.RandomRange(0,10);
+        float z = UnityEngine.Random.RandomRange(0,10); ;
+        Vector3 dir = new Vector3(x,0,z);
+        rigid.AddForce(dir,ForceMode.Impulse);
 	}
 
     void FixedUpdate()
@@ -48,7 +53,7 @@ public class Ball : MonoBehaviour {
     void Death()
     {
 
-        //Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 
 }
