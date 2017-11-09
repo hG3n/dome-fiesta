@@ -14,6 +14,7 @@ public class player : MonoBehaviour {
     public bool ground;
     public float maxspeed;
     public int playernumber = 1;
+    public int team_id;
 
     
     // Use this for initialization
@@ -81,7 +82,7 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal2") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 2 button 4") && ground)
+            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 1 button 5") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }
@@ -103,7 +104,7 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal3") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.T) && ground || Input.GetKey("joystick 3 button 4") && ground)
+            if (Input.GetKey(KeyCode.T) && ground || Input.GetKey("joystick 2 button 4") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }
@@ -125,7 +126,7 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal4") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.I) && ground || Input.GetKey("joystick 4 button 4") && ground)
+            if (Input.GetKey(KeyCode.I) && ground || Input.GetKey("joystick 2 button 5") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }

@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour {
     public Vector3 velocity;
     public float force;
     public float bounce_force;
+    public int last_hit;
 
 
 
@@ -36,7 +37,18 @@ public class Ball : MonoBehaviour {
             Vector3 dir = transform.position - other.transform.position;
             rigid.velocity = Vector3.zero;
             rigid.AddForce(dir*bounce_force,ForceMode.Impulse);
+            last_hit = other.gameObject.GetComponent<player>().team_id;
         }
+        if (other.tag == "Death")
+        {
+            Death();
+        }
+    }
+
+    void Death()
+    {
+
+        //Destroy(this.gameObject);
     }
 
 }

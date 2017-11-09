@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GameField : MonoBehaviour {
 
-    public float id;
-    public delegate void FieldEvent(float id);
+    public int last_hit;
+    public delegate void FieldEvent(int lasthit);
     public static event FieldEvent Score;
 
     // Use this for initialization
@@ -22,7 +22,8 @@ public class GameField : MonoBehaviour {
     {
         if (other.tag == "Ball")
         {
-            Score(id);
+            last_hit = other.gameObject.GetComponent<Ball>().last_hit;
+            Score(last_hit);
         }
     }
 }
