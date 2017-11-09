@@ -53,7 +53,12 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.RightShift) && ground)
+            else
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal1") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.RightShift) && ground|| Input.GetKey("joystick 1 button 4") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             } 
@@ -70,7 +75,56 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.Space) && ground)
+            else
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal2") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 2 button 4") && ground)
+            {
+                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            }
+        }
+        if (playernumber == 3)
+        {
+            if (Input.GetKey(KeyCode.F))
+            {
+                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else if (Input.GetKey(KeyCode.H))
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal3") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.T) && ground || Input.GetKey("joystick 3 button 4") && ground)
+            {
+                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            }
+        }
+        if (playernumber == 4)
+        {
+            if (Input.GetKey(KeyCode.J))
+            {
+                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else if (Input.GetKey(KeyCode.L))
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal4") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.I) && ground || Input.GetKey("joystick 4 button 4") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }

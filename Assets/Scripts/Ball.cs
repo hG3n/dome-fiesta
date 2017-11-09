@@ -11,13 +11,14 @@ public class Ball : MonoBehaviour {
     public float bounce_force;
 
 
+
+
     // Use this for initialization
     void Start ()
     {
         rigid = GetComponent<Rigidbody>();
 	}
 
-    // Update is called once per frame
     void FixedUpdate()
     { 
         velocity = rigid.velocity;
@@ -37,4 +38,5 @@ public class Ball : MonoBehaviour {
             rigid.AddForce(dir*bounce_force,ForceMode.Impulse);
         }
     }
+
 }

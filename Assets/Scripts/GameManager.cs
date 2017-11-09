@@ -18,9 +18,14 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void OnEnable()
+    {
+        GameField.Score +=Score;
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 
@@ -47,6 +52,11 @@ public class GameManager : MonoBehaviour {
     }
 
     void InitializeAI()
+    {
+
+    }
+
+    void Score(float id)
     {
 
     }
