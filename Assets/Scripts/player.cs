@@ -13,6 +13,7 @@ public class player : MonoBehaviour {
     public Rigidbody rigid;
     public bool ground;
     public float maxspeed;
+    public int playernumber = 1;
     
     // Use this for initialization
 	void Start ()
@@ -23,25 +24,13 @@ public class player : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-        
-        if (Input.GetAxis("Horizontal") < 0)
-        {
-            movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-            rigid.AddForce(movement);
-        }
-        else if(Input.GetAxis("Horizontal")>0)
-        {
-            movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-            rigid.AddForce(movement);
-        }
+
+        Movement();
 
         //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
         //rigid.AddRelativeForce(movement);
 
-        if (Input.GetKeyDown("space") && ground)
-        {
-            rigid.AddForce(Vector3.up*jump, ForceMode.Impulse);
-        }
+
        // Vector3 target = new Vector3(area.transform.position.x, transform.position.y, area.transform.position.z);
         transform.LookAt(area.transform.position);
         if (rigid.velocity.magnitude > maxspeed)
@@ -49,6 +38,44 @@ public class player : MonoBehaviour {
             rigid.velocity =Vector3.ClampMagnitude(rigid.velocity,maxspeed);
         }
 	}
+
+    void Movement()
+    {
+        if (playernumber == 1)
+        {
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.RightShift) && ground)
+            {
+                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            } 
+        }
+        if (playernumber == 2)
+        {
+            if (Input.GetKey(KeyCode.A))
+            {
+                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+                rigid.AddForce(movement);
+            }
+            if (Input.GetKey(KeyCode.Space) && ground)
+            {
+                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            }
+        }
+    }
 
     private void OnTriggerStay(Collider other)
     {
