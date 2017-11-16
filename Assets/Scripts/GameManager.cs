@@ -11,9 +11,10 @@ public class GameManager : MonoBehaviour {
 
     public List<GameObject> PlayerSkins;
     public List<GameObject> BallSkin;
+    public List<GameObject> FieldBlock;
 
     //Settings
-
+    public int fieldblocks;
     public string gamemode;
     public int player_count;
     public int team_count;
@@ -51,7 +52,14 @@ public class GameManager : MonoBehaviour {
 
     void InitializeArea()
     {
-
+        if (fieldblocks == 2)
+        {
+            Instantiate(FieldBlock[0],transform.position,transform.rotation);
+        }
+        else if (fieldblocks == 4)
+        {
+            Instantiate(FieldBlock[1], transform.position, transform.rotation);
+        }
     }
 
     void InitializePlayer()
