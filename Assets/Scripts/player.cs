@@ -82,7 +82,7 @@ public class player : MonoBehaviour {
                 movement = right.transform.position * Input.GetAxis("Horizontal2") * speed * Time.deltaTime;
                 rigid.AddForce(movement);
             }
-            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 1 button 5") && ground)
+            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 2 button 4") && ground)
             {
                 rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }

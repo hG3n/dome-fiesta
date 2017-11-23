@@ -46,12 +46,19 @@ public class GameManager : MonoBehaviour {
 
     void GameStart()
     {
-
+        // 2 TEAMS
+        //Create Blocks
+        //Spawn Player
+        //Timer
+        //Spawn Ball
         
     }
 
     void InitializeArea()
     {
+        //TODO
+        //Create Blocks by Angle
+        //
         if (fieldblocks == 2)
         {
             Instantiate(FieldBlock[0],transform.position,transform.rotation);
