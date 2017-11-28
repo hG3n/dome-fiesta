@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> PlayerSkins;
     public List<GameObject> BallSkin;
     public List<GameObject> FieldBlock;
+    public List<GameObject> World;
 
     //Settings
     public int fieldblocks;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour {
     public int player_count;
     public int team_count;
     public int win_score = 10;
+    public int world_select;
 
     public delegate void GameManagerEvent(int id);
     public static event GameManagerEvent addscore;
@@ -44,7 +46,7 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
-    void GameStart()
+    public void GameStart()
     {
         // 2 TEAMS
         //Create Blocks
@@ -91,6 +93,11 @@ public class GameManager : MonoBehaviour {
         {
 
         }
+    }
+
+    void InitializeWorld()
+    {
+
     }
 
     void InitializeAI()

@@ -7,6 +7,7 @@ public class player : MonoBehaviour {
     public GameObject area;
     public GameObject left;
     public GameObject right;
+    public string name;
     public float speed;
     public float jump;
     public Vector3 movement;
@@ -15,6 +16,7 @@ public class player : MonoBehaviour {
     public float maxspeed;
     public int playernumber = 1;
     public int team_id;
+    public bool play;
 
     
     // Use this for initialization
@@ -22,12 +24,34 @@ public class player : MonoBehaviour {
     {
         rigid = GetComponent<Rigidbody>();
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate ()
+
+    private void OnEnable()
     {
-        Movement();
-        
+        UIManager.Click += GetInput;
+    }
+    private void OnDisable()
+    {
+        UIManager.Click -= GetInput;
+    }
+
+    void GetInput(string source)
+    {
+        if (source == "pause")
+        {
+            play = false;
+        }
+        else if (source == "unpause")
+        {
+            play = true;
+        }
+    }
+    // Update is called once per frame
+    void FixedUpdate ()
+    {
+        if (play)
+        {
+            Movement();
+        }
 
         //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
         //rigid.AddRelativeForce(movement);

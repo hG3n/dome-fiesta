@@ -11,7 +11,7 @@ Shader "ProBuilder/UnlitVertexColor"
 		ZWrite On
 		Cull Off
 
-		Pass
+		Pass 
 		{
 			AlphaTest Greater .25
 
@@ -19,6 +19,9 @@ Shader "ProBuilder/UnlitVertexColor"
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
+
+			float4 _Color;
+			float _Scale;
 
 			struct appdata
 			{
@@ -36,7 +39,7 @@ Shader "ProBuilder/UnlitVertexColor"
 			{
 				v2f o;
 
-                o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				o.color = v.color;
 
 				return o;

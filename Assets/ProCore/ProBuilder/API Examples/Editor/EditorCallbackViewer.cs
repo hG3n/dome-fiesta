@@ -133,7 +133,7 @@ class EditorCallbackViewer : EditorWindow
 
 		GUILayout.Space(4);
 
-		pb_EditorGUIUtility.DrawSolidColor(r, logBackgroundColor);
+		pb_GUI_Utility.DrawSolidColor(r, logBackgroundColor);
 
 		scroll = GUILayout.BeginScrollView(scroll);
 

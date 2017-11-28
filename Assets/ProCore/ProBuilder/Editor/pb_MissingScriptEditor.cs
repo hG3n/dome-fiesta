@@ -8,7 +8,6 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using ProBuilder2.Common;
-using ProBuilder2.MeshOperations;
 
 namespace ProBuilder2.EditorCommon
 {
@@ -375,11 +374,7 @@ namespace ProBuilder2.EditorCommon
 								).ToArray();
 
 							broken = broken.Distinct().ToArray();
-
-							ProBuilder2.Actions.ProBuilderize.DoProBuilderize(
-								System.Array.ConvertAll(broken, x => (GameObject) x)
-									.Select(x => x.GetComponent<MeshFilter>()),
-								pb_MeshImporter.Settings.Default);
+							ProBuilder2.Actions.ProBuilderize.DoProBuilderize(System.Array.ConvertAll(broken, x => (GameObject)x).Select(x => x.GetComponent<MeshFilter>()), true);
 						}
 
 						// Always delete components

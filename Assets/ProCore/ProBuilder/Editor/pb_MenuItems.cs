@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using ProBuilder2.Common;
 using ProBuilder2.EditorCommon;
@@ -9,7 +11,7 @@ public class pb_MenuItems : EditorWindow
 	// const string DOCUMENTATION_URL = "http://www.protoolsforunity3d.com/docs/probuilder/";
 	const string DOCUMENTATION_URL = "http://procore3d.github.io/probuilder2/";
 
-	private static pb_Editor editor { get { return pb_Editor.instance; } }
+	static pb_Editor editor { get { return pb_Editor.instance; } }
 
 #region WINDOW
 
@@ -37,7 +39,7 @@ public class pb_MenuItems : EditorWindow
 	static pb_Object[] selection { get { return Selection.transforms.GetComponents<pb_Object>(); } }
 
 	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Geometry/Extrude %e", true)]
-	private static bool MenuVerifyExtrude()
+	static bool MenuVerifyExtrude()
 	{
 		pb_Editor e = pb_Editor.instance;
 
@@ -49,55 +51,10 @@ public class pb_MenuItems : EditorWindow
 	}
 
 	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Geometry/Extrude %e", false, pb_Constant.MENU_GEOMETRY + 3)]
-	private static void MenuDoExtrude()
+	static void MenuDoExtrude()
 	{
 		pb_Menu_Commands.MenuExtrude(selection, false);
 	}
-
-	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Selection/Select Loop &l", true, pb_Constant.MENU_SELECTION)]
-	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Selection/Select Ring &r", true, pb_Constant.MENU_SELECTION)]
-	private static bool MenuVerifyRingLoop()
-	{
-		if (editor == null || editor.editLevel != EditLevel.Geometry)
-			return false;
-
-		if (editor.selectionMode == SelectMode.Edge)
-			return pb_Selection.Top().Any(x => x.SelectedEdgeCount > 0);
-		else if (editor.selectionMode == SelectMode.Face)
-			return pb_Selection.Top().Any(x => x.SelectedFaceCount > 0);
-		return false;
-	}
-
-	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Selection/Select Loop &l", false, pb_Constant.MENU_SELECTION)]
-	private static void MenuSelectLoop()
-	{
-		switch (editor.selectionMode)
-		{
-			case SelectMode.Edge:
-				pb_Menu_Commands.MenuLoopSelection(selection);
-				break;
-
-			case SelectMode.Face:
-				pb_Menu_Commands.MenuLoopFaces(selection);
-				break;
-		}
-	}
-
-	[MenuItem("Tools/" + pb_Constant.PRODUCT_NAME + "/Selection/Select Ring &r", false, pb_Constant.MENU_SELECTION)]
-	private static void MenuSelectRing()
-	{
-		switch (editor.selectionMode)
-		{
-			case SelectMode.Edge:
-				pb_Menu_Commands.MenuRingSelection(selection);
-				break;
-
-			case SelectMode.Face:
-				pb_Menu_Commands.MenuRingFaces(selection);
-				break;
-		}
-	}
-
 #endregion
 
 #region VERTEX COLORS

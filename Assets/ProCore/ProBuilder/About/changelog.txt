@@ -1,86 +1,3 @@
-# ProBuilder 2.9.8f3
-
-## Bug Fixes
-
-- Fix shader compile errors when targeting mobile platforms.
-- Fix possible overflow in vector hashing functions.
-- Fix ProBuilderize failing to import quads in some cases.
-- Fix FBX export not including manually unwrapped UVs.
-- Fix toolbar using old icons with basic skin.
-
-# ProBuilder 2.9.7f5
-
-## Features
-
-- Unity 2017.3 beta support.
-- New toolbar icons (Right/Context + Click in Toolbar -> Use Icon Mode).
-- Significantly improved quad detection in ProBuilderize function.
-- ProBuilderize now able to import smoothing groups.
-- Support exporting quads to FBX format (requires Unity FbxExporter in project).
-- Newly redesigned `Smooth Groups Editor`.
-- New `Select Face Loop` and `Select Face Ring` actions.
-
-## Bug Fixes
-
-- Fix possible null reference when picking ProBuilder objects.
-- Fix "Select Hole" disappearing instead of showing as disabled.
-- Fix "Extrude Face" disabled icon not matching current mode.
-- Fix Standard Vertex Color shader preventing builds on some platforms when fog is enabled.
-
-## Changes
-
-- Don't show `pb_Lightmapping` warnings by default.
-- Smoothing groups may now extend beyond the 42 provided in the editor. Any smoothing group between 1 and 24, or greater than 42 is treated as a smooth face (currently only accessible in code).
-- Set ProBuilder Standard Vertex Color shader fallback to "Standard."
-
-# ProBuilder 2.9.5f3
-
-## Features
-
-- Deep selection support when clicking faces.
-
-## Bug Fixes
-
-- Drag select with "Select Hidden: Off" now works consistently in Unity 5.6 and up.
-- Fix automatic lightmapping attempting to update while ProBuilder is modifying geometry.
-
-## Changes
-
-- Unity 4.7 and 5.0 are no longer supported (2.9.4 will continue to be available for these version of Unity).
-
-# ProBuilder 2.9.4f1
-
-## Features
-
-- When a lightmapping finishes baking show a warning if any ProBuilder objects marked as Detail were left out due to missing UV2s.
-
-## Bug Fixes
-
-- Fix single key shortcuts emitting system beep on Mac.
-- Fix vertex movement not respecting snap settings when ProGrids is placed in Plugins folder.
-- Don't delete UnityEngine meshes when unloading a scene in play mode.
-- Fix occasional crashes when using Select Hole and Fill Hole actions.
-- Fix hang on opening context menu with very large projects.
-- Fix Vertex Color Palette not applying colors correctly in vertex mode.
-
-# ProBuilder 2.9.3f0
-
-## Features
-
-- Support exporting quads in OBJ format.
-- Add a context menu item to quickly create material palettes from the current Asset window selection.
-
-## Bug Fixes
-
-- Use `additionalVertexStreams` mesh attributes where possible when ProBuilderizing.
-- Fix for Windows version sometimes endlessly creating folders when root folder moved from Assets/ProCore.
-
-# ProBuilder 2.9.2f1
-
-## Bug Fixes
-
-- Add file stubs for deprecated repair actions to prevent compilation errors when updating.
-
 # ProBuilder 2.9.1f0
 
 ## Features
@@ -192,7 +109,7 @@
 ## Bug Fixes
 
 - Fix inconsistent About Window behavior when importing updates.
-- Make face highlight code snippet more robust in Runtime Editing example.
+- Make face highlight code snippet more robust in Runtime Editing example. 
 - Don't leave a progress bar behind if Probuilderize fails.
 - Fix ProBuilder-ize adding pb_Entity multiple times.
 - Apply Quick Offset adjustments to all selected ProBuilder objects.
@@ -617,7 +534,7 @@
 - Automatically batch vertices even if they don't belong to a smoothing group (actual mesh vertex is now shown in scene info box).
 - Add mesh dimensions overlay (ProBuilder > Object Info > {Show, Hide} Dimensions Overlay).
 - Make vertex colors button extend-able, with the option to set which color editor the shortcut should open (Palette or Painter).
-- New option to show element/object mode toolbar in scene (default), including positioning parameters.
+- New option to show element/object mode toolbar in scene (default), including positioning parameters. 
 - Improve vertex painter performance with large meshes.
 - Unity 5.2 compatibility.
 
@@ -819,7 +736,7 @@
 - New dark background in UV editor for Unity light skin users.
 - Improve performance when selecting objects with large vertex counts.
 
-## Bug Fixes
+## Bug Fixes	
 
 - Fix crash when a face material is null (defaults to Unity Default-Diffuse).
 - Fix incorrect results when extruding multiple faces sharing a single center vertex (usually seen on the top of a cylinder).
@@ -859,7 +776,7 @@
 ## Changes
 
 - Remove 'NoDraw' feature (necessary for Unity 5 compatiblity).
-
+	
 ## Beta
 
 - Rudimentary Boolean tool added - this is very early in development.
@@ -924,7 +841,7 @@
 ## API
 
 - New 'HueCube.cs' API example script demonstrates changing single vertex colors.
-- New 'pb_SerializableObject' class provides serializable storage for ProBuilder objects.  Add 'pb_Object::InitWithSerializableObject' constructor.
+- New 'pb_SerializableObject' class provides serializable storage for ProBuilder objects.  Add 'pb_Object::InitWithSerializableObject' constructor.  
 
 ## Beta Notes f1
 
@@ -1031,7 +948,7 @@
 - Improve frequency of expensive caching in pb_Editor.
 - Removed most naughty words from the codebase.
 - New pb_MenuCommands class synchronizes behavior between MenuItems and Editor buttons.
-
+	
 ## Beta Notes: f14
 
 - Editor: New 'Conform Normals' geometry operation.
@@ -1124,7 +1041,7 @@
 - New ClassesEditing segment of Classes folder contains all non-essential files.  This allows for a single ProBuilderCore.dll that can be redistributed with ProBuilder objects allowing users without ProBuilder to view and load ProBuilder objects.
 
 # ProBuilder 2.2.4f0
-
+	
 ## Bug Fixes
 
 - Fix 'Null Reference Error' when editing objects at runtime.
@@ -1151,7 +1068,7 @@
 
 ## Features
 
-- New 'Texture Groups' UV setting.  Select faces and group to project seamless UVs.
+- New 'Texture Groups' UV setting.  Select faces and group to project seamless UVs. 
 - New 'Make Asset' Action allows users to save ProBuilder objects as Mesh objects.
 - New 'Subdivide' command.
 - New 'Connect' command (edges, faces, vertices).
@@ -1204,7 +1121,7 @@
 
 ## Features
 
-- Update Undo code for Unity 4.3 compatibility (Install Interface will determine the correct package for your Unity version automatically).
+- Update Undo code for Unity 4.3 compatibility (Install Interface will determine the correct package for your Unity version automatically).	
 - Add Rotate and Scale tool when editing faces or vertices (accessed by 'E' and 'R' shortcuts, respectively).
 - Add EditLevel toolbar in sceneview for quickly viewing and setting EditLevel. @Genstein suggested improvement.
 - New Edge selection mode.
@@ -1241,7 +1158,7 @@
 - Fix bug where detaching a face could result in empty entries to the pb_Object->_sharedIndices member, throwing null-ref.
 - Fix InvertFaceSelection not correctly updating the pb_Object->SelectedTriangles list.
 - Don't show 'Nodraw Face' notification if in Top Level editing mode.
-- 'G' key now exits Texture Mode.
+- 'G' key now exits Texture Mode.  
 - Texture window shortcuts now show notifications.
 - Fix button sizing in pb_Editor window.
 - Show notification when toggling Selection Mode from GUI button.
@@ -1522,7 +1439,7 @@
 - Fix minor bug where vertex handles would sometimes not immediately draw on entering Geometry editing mode.
 - Fix bug where closing Texture Window manually would not always exit EditLevel.Texture.
 - Fix bug where an Undo/Redo event would sometimes cause pb_Editor to attempt to refresh every pb_Object in scene.
-- Fix bug where exiting EditLevel.Texture to Geo Mode would not correctly remember the previous SelectionMode.
+- Fix bug where exiting EditLevel.Texture to Geo Mode would not correctly remember the previous SelectionMode. 
 - Fix bug where cylinder object sometimes initialize with un-even side lengths.
 - Fix bug where on deleting a pb_Object's MeshCollider, ProBuilder would not immediately re-initialize it (prevents common PEBKAC error).
 
