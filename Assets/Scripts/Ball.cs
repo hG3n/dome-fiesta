@@ -48,7 +48,7 @@ public class Ball : MonoBehaviour {
         }
         if (other.tag == "Death")
         {
-            Death();
+            //Death();
         }
         if (other.tag == "Team1")
         {
@@ -60,7 +60,7 @@ public class Ball : MonoBehaviour {
         }
     }
 
-    void Death()
+    public void Death()
     {
         Instantiate(death,transform.position,transform.rotation);
         Destroy(transform.parent.gameObject);

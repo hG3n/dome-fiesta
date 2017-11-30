@@ -191,6 +191,7 @@ public class GameManager : MonoBehaviour {
 
     private void ResetRound()
     {
+        Debug.Log("Spawn Ball");
         Instantiate(BallSkin[0],transform.position,transform.rotation);
     }
 }

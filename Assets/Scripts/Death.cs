@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Death : MonoBehaviour {
 
-    private ParticleSystem ps;
+    public ParticleSystem ps;
 
     void Start()
     {

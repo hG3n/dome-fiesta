@@ -24,7 +24,9 @@ public class GameField : MonoBehaviour {
         if (other.tag == "Ball")
         {
             last_hit = other.gameObject.GetComponent<Ball>().last_hit;
+            other.gameObject.GetComponent<Ball>().Death();
             Score(last_hit,team_area);
+            
         }
     }
 }
