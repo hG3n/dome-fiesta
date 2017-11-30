@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour {
     public GameObject GameManager;
     public List<GameObject> Menu;
     public List<GameObject> Game_Menu;
-    public List<GameObject> PlayerSelection;
+    public List<GameObject> Playerselection;
     public List<GameObject> GameSetting;
     public List<GameObject> PlaySetting;
     public List<GameObject> Pause;
@@ -44,6 +44,8 @@ public class UIManager : MonoBehaviour {
             Input_Controller();
         }
 	}
+
+
 
     void Input_Controller()
     {
@@ -105,9 +107,16 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+
+
     void Next()
     {
         select = -1;
+        if (menu_select ==1 && CheckReady())
+        {
+            menu_select = 2;
+            MenuSelect();
+        }
     }
 
     void Back()
@@ -248,12 +257,26 @@ public class UIManager : MonoBehaviour {
         int player_size = GameManager.GetComponent<GameManager>().player_count;
         for (int i = 0; i < player_size;++i)
         {
-            if (!PlayerSelection[i].GetComponent<PlayerSelection>().ready)
+            if (!Playerselection[i].GetComponent<PlayerSelection>().ready)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    public void CheckActivate()
+    {
+        //Check if ever player is ready
+        int player_count = 0;
+        for (int i = 0; i < Playerselection.Count; ++i)
+        {
+            if (Playerselection[i].GetComponent<PlayerSelection>().activate)
+            {
+                ++player_count;
+            }
+        }
+        GameManager.GetComponent<GameManager>().player_count = player_count;
     }
 
     public void StartGame()

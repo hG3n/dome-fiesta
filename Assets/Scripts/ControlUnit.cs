@@ -9,6 +9,7 @@ public class ControlUnit : MonoBehaviour {
 
     public string Source;
     public bool horizontal;
+    public bool horizontal_zero;
     public bool vertical;
     public bool jump;
     public bool back;
@@ -140,11 +141,19 @@ public class ControlUnit : MonoBehaviour {
                 {
                     ButtonInput("con1", "horizont");
                     Debug.Log("pressed Horizontal 1");
+                    horizontal_zero = false;
                 }
                 else if (Input.GetAxis("Horizontal1") < 0 && horizontal)
                 {
                     ButtonInput("con1", "horizontneg");
                     Debug.Log("pressed Horizontal -1");
+                    horizontal_zero = false;
+                }
+                else if (Input.GetAxis("Horizontal1")==0 && !horizontal_zero)
+                {
+                    horizontal_zero = true;
+                    ButtonInput("con1", "horizonalzero");
+                    Debug.Log("pressed Horizontal 0");
                 }
                 horizontal = false;
             }
@@ -162,11 +171,19 @@ public class ControlUnit : MonoBehaviour {
                 {
                     ButtonInput("con2", "horizont");
                     Debug.Log("pressed Horizontal 2");
+                    horizontal_zero = false;
                 }
                 else if (Input.GetAxis("Horizontal2") < 0 && horizontal)
                 {
                     ButtonInput("con2", "horizontneg");
                     Debug.Log("pressed Horizontal -2");
+                    horizontal_zero = false;
+                }
+                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                {
+                    horizontal_zero = true;
+                    ButtonInput("con2", "horizonalzero");
+                    Debug.Log("pressed Horizontal 0");
                 }
                 horizontal = false;
             }
@@ -184,11 +201,19 @@ public class ControlUnit : MonoBehaviour {
                 {
                     ButtonInput("con3", "horizont");
                     Debug.Log("pressed Horizontal 3");
+                    horizontal_zero = false;
                 }
                 else if (Input.GetAxis("Horizontal3") < 0 && horizontal)
                 {
                     ButtonInput("con3", "horizontneg");
                     Debug.Log("pressed Horizontal -3");
+                    horizontal_zero = false;
+                }
+                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                {
+                    horizontal_zero = true;
+                    ButtonInput("con3", "horizonalzero");
+                    Debug.Log("pressed Horizontal 0");
                 }
                 horizontal = false;
             }
@@ -206,11 +231,19 @@ public class ControlUnit : MonoBehaviour {
                 {
                     ButtonInput("con4", "horizont");
                     Debug.Log("pressed Horizontal 4");
+                    horizontal_zero = false;
                 }
                 else if (Input.GetAxis("Horizontal4") < 0 && horizontal)
                 {
                     ButtonInput("con4", "horizontneg");
                     Debug.Log("pressed Horizontal -4");
+                    horizontal_zero = false;
+                }
+                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                {
+                    horizontal_zero = true;
+                    ButtonInput("con4", "horizonalzero");
+                    Debug.Log("pressed Horizontal 0");
                 }
                 horizontal = false;
             }
@@ -233,6 +266,10 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 1 Button A");
                 jump = false;
             }
+            else
+            {
+                jump = true;
+            }
         }
         //Joystick 2 Button A
         else if (Source == "con2")
@@ -242,6 +279,10 @@ public class ControlUnit : MonoBehaviour {
                 ButtonInput("con2", "jump");
                 Debug.Log("pressed 2 Button A");
                 jump = false;
+            }
+            else
+            {
+                jump = true;
             }
         }
         //Joystick 3 Button A
@@ -253,6 +294,10 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 3 Button A");
                 jump = false;
             }
+            else
+            {
+                jump = true;
+            }
         }
         //Joystick 4 Button A
         else if (Source == "con4")
@@ -263,8 +308,13 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 4 Button A");
                 jump = false;
             }
+            else
+            {
+                jump = true;
+            }
         }
-        jump = true;
+
+
 
     }
 
@@ -279,6 +329,10 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 1 Button B");
                 back = false;
             }
+            else
+            {
+                back = true;
+            }
         }
         //Joystick 2 Button B
         else if (Source == "con2")
@@ -288,6 +342,10 @@ public class ControlUnit : MonoBehaviour {
                 ButtonInput("con2", "back");
                 Debug.Log("pressed 2 Button B");
                 back = false;
+            }
+            else
+            {
+                back = true;
             }
         }
         //Joystick 3 Button B
@@ -299,6 +357,10 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 3 Button B");
                 back = false;
             }
+            else
+            {
+                back = true;
+            }
         }
         //Joystick 4 Button B
         else if (Source == "con4")
@@ -309,7 +371,11 @@ public class ControlUnit : MonoBehaviour {
                 Debug.Log("pressed 4 Button B");
                 back = false;
             }
+            else
+            {
+                back = true;
+            }
         }
-        back = true;
+
     }
 }

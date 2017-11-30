@@ -27,18 +27,21 @@ public class GameManager : MonoBehaviour {
     
     
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
 
     private void OnEnable()
     {
         GameField.Score +=Score_Ball;
+        PlayerSelection.Ready += PlayerReady;
     }
 
     private void OnDisable()
     {
         GameField.Score -= Score_Ball;
+        PlayerSelection.Ready -= PlayerReady;
     }
 
     // Update is called once per frame
@@ -126,7 +129,7 @@ public class GameManager : MonoBehaviour {
     void AddPlayer(int skin, int teamid)
     {
         PlayerList.Add(PlayerSkins[skin]);
-        PlayerList[PlayerList.Count].GetComponent<player>().team_id = teamid;
+        PlayerList[PlayerList.Count-1].GetComponentInChildren<player>().team_id = teamid;
     }
 
     void CheckScore()
@@ -136,10 +139,30 @@ public class GameManager : MonoBehaviour {
             Team tmp_team = Teams[i].GetComponent<Team>();
             if (tmp_team.score >= win_score)
             {
-                Debug.Log("Team " + tmp_team.teamname + " Wins");
-                
+                Debug.Log("Team " + tmp_team.teamname + " Wins");              
             }
         }
+    }
+
+    void PlayerReady(bool ready, int team, string controller, int skin)
+    {
+        if (CheckPlayer(controller))
+        {
+            AddPlayer(skin, team);
+            PlayerList[PlayerList.Count - 1].GetComponentInChildren<player>().Controller = controller;
+        }        
+    }
+
+    bool CheckPlayer(string controller)
+    {
+        for (int i = 0; i < PlayerList.Count; ++i)
+        {
+            if (controller == PlayerList[i].GetComponentInChildren<player>().Controller)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void ResetRound()

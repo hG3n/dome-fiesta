@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour {
 
     public Rigidbody rigid;
+    public GameObject death;
     public float speed;
     public Vector3 velocity;
     public float force;
@@ -52,8 +53,8 @@ public class Ball : MonoBehaviour {
 
     void Death()
     {
-
-        Destroy(this.gameObject);
+        Instantiate(death,transform.position,transform.rotation);
+        Destroy(transform.parent.gameObject);
     }
 
 }

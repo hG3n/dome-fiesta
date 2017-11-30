@@ -11,10 +11,11 @@ public class player : MonoBehaviour {
     public float speed;
     public float jump;
     public Vector3 movement;
+    public int direction;
     public Rigidbody rigid;
     public bool ground;
     public float maxspeed;
-    public int playernumber = 1;
+    public string Controller;
     public int team_id;
     public bool play;
 
@@ -27,134 +28,84 @@ public class player : MonoBehaviour {
 
     private void OnEnable()
     {
-        UIManager.Click += GetInput;
+        ControlUnit.ButtonInput += GetInput;
     }
     private void OnDisable()
     {
-        UIManager.Click -= GetInput;
+        ControlUnit.ButtonInput -= GetInput;
     }
 
-    void GetInput(string source)
+    public void GetInput(string source, string button)
     {
-        if (source == "pause")
+        if (Controller == source)
         {
-            play = false;
-        }
-        else if (source == "unpause")
-        {
-            play = true;
+            if (button == "jump")
+            {
+                Jump();
+            }
+            else if (button == "horizont")
+            {
+                SelectHorizontal(1);
+            }
+            else if (button == "horizontneg")
+            {
+                SelectHorizontal(-1);
+            }
+            else if (button == "horizontzero")
+            {
+                SelectHorizontal(0);
+            }
         }
     }
+
+    public void SelectHorizontal(int value)
+    {
+        if (value < 0)
+        {
+            direction = -1;
+        }
+        else if (value > 0)
+        {
+            direction = 1;
+        }
+        else
+        {
+            direction = 0;
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate ()
+        {
+            if (play)
+            {
+                Movement();
+            }
+
+            //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+            //rigid.AddRelativeForce(movement);
+
+
+           // Vector3 target = new Vector3(area.transform.position.x, transform.position.y, area.transform.position.z);
+            transform.LookAt(area.transform.position);
+            if (rigid.velocity.magnitude > maxspeed)
+            {
+                rigid.velocity =Vector3.ClampMagnitude(rigid.velocity,maxspeed);
+            }
+	    }
+
+    void Jump()
     {
-        if (play)
+        if (ground)
         {
-            Movement();
+            rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
         }
-
-        //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        //rigid.AddRelativeForce(movement);
-
-
-       // Vector3 target = new Vector3(area.transform.position.x, transform.position.y, area.transform.position.z);
-        transform.LookAt(area.transform.position);
-        if (rigid.velocity.magnitude > maxspeed)
-        {
-            rigid.velocity =Vector3.ClampMagnitude(rigid.velocity,maxspeed);
-        }
-	}
+    }
 
     void Movement()
     {
-        if (playernumber == 1)
-        {
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else if (Input.GetKey(KeyCode.RightArrow))
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal1") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            if (Input.GetKey(KeyCode.RightShift) && ground|| Input.GetKey("joystick 1 button 4") && ground)
-            {
-                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            } 
-        }
-        if (playernumber == 2)
-        {
-            if (Input.GetKey(KeyCode.A))
-            {
-                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal2") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            if (Input.GetKey(KeyCode.Space) && ground || Input.GetKey("joystick 2 button 4") && ground)
-            {
-                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            }
-        }
-        if (playernumber == 3)
-        {
-            if (Input.GetKey(KeyCode.F))
-            {
-                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else if (Input.GetKey(KeyCode.H))
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal3") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            if (Input.GetKey(KeyCode.T) && ground || Input.GetKey("joystick 2 button 4") && ground)
-            {
-                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            }
-        }
-        if (playernumber == 4)
-        {
-            if (Input.GetKey(KeyCode.J))
-            {
-                movement = left.transform.position * -Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else if (Input.GetKey(KeyCode.L))
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            else
-            {
-                movement = right.transform.position * Input.GetAxis("Horizontal4") * speed * Time.deltaTime;
-                rigid.AddForce(movement);
-            }
-            if (Input.GetKey(KeyCode.I) && ground || Input.GetKey("joystick 2 button 5") && ground)
-            {
-                rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            }
-        }
+        movement = right.transform.position * direction * speed * Time.deltaTime;
+        rigid.AddForce(movement);
     }
 
     private void OnTriggerStay(Collider other)

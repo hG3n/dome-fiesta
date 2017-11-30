@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerSelection : MonoBehaviour {
 
-    public delegate void PlayerSelect(string source);
-    public static event PlayerSelect Control;
+    public delegate void PlayerSelect(bool ready, int team, string controller, int skin);
+    public static event PlayerSelect Ready;
 
     public GameObject GameManager;
     public GameObject ControlManager;
+    public GameObject UIManager;
     public List<GameObject> Select;
     public List<GameObject> Window;
+    public GameObject ready_text;
     public GameObject Skin;
     public Transform spawn;
     public Text team_text;
@@ -120,11 +122,12 @@ public class PlayerSelection : MonoBehaviour {
                 Window[i].SetActive(true);
             }
         }
+        UIManager.GetComponent<UIManager>().CheckActivate();
     }
 
     public void GetInput(string source, string button)
     {
-        if (Controller == source)
+        if (Controller == source && !ready)
         {
             if (button == "jump")
             {
@@ -221,17 +224,26 @@ public class PlayerSelection : MonoBehaviour {
         if (select == Select.Count - 1)
         {
             ready = true;
+            ready_text.SetActive(true);
             player_text.color = Color.green;
+            Ready(ready, team_number, Controller, select_skin);
+            
         }
         else
         {
-            SelectHorizontal(1);
+            SelectVertical(1);
         }
     }
 
     public void Back()
     {
-
+        if (ready)
+        {
+            ready = false;
+            ready_text.SetActive(false);
+            player_text.color = Color.black;
+            Ready(ready, team_number, Controller, select_skin);
+        }
     }
 
 
@@ -239,7 +251,7 @@ public class PlayerSelection : MonoBehaviour {
     {
         if (value > 0)
         {
-            if (team_number >= 3)
+            if (team_number >= GameManager.GetComponent<GameManager>().team_count)
             {
                 team_number = 0;               
             }
@@ -252,7 +264,7 @@ public class PlayerSelection : MonoBehaviour {
         {
             if (team_number <= 0)
             {
-                team_number = 4;
+                team_number = GameManager.GetComponent<GameManager>().team_count-1;
             }
             else
             {
