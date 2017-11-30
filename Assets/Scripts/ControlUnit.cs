@@ -149,13 +149,14 @@ public class ControlUnit : MonoBehaviour {
                     Debug.Log("pressed Horizontal -1");
                     horizontal_zero = false;
                 }
-                else if (Input.GetAxis("Horizontal1")==0 && !horizontal_zero)
-                {
-                    horizontal_zero = true;
-                    ButtonInput("con1", "horizonalzero");
-                    Debug.Log("pressed Horizontal 0");
-                }
+
                 horizontal = false;
+            }
+            else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+            {
+                horizontal_zero = true;
+                ButtonInput("con1", "horizontzero");
+                Debug.Log("pressed Horizontal 0");
             }
             else
             {
@@ -179,7 +180,7 @@ public class ControlUnit : MonoBehaviour {
                     Debug.Log("pressed Horizontal -2");
                     horizontal_zero = false;
                 }
-                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                else if (Input.GetAxis("Horizontal2") == 0 && !horizontal_zero)
                 {
                     horizontal_zero = true;
                     ButtonInput("con2", "horizonalzero");
@@ -209,7 +210,7 @@ public class ControlUnit : MonoBehaviour {
                     Debug.Log("pressed Horizontal -3");
                     horizontal_zero = false;
                 }
-                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                else if (Input.GetAxis("Horizontal3") == 0 && !horizontal_zero)
                 {
                     horizontal_zero = true;
                     ButtonInput("con3", "horizonalzero");
@@ -239,7 +240,7 @@ public class ControlUnit : MonoBehaviour {
                     Debug.Log("pressed Horizontal -4");
                     horizontal_zero = false;
                 }
-                else if (Input.GetAxis("Horizontal1") == 0 && !horizontal_zero)
+                else if (Input.GetAxis("Horizontal4") == 0 && !horizontal_zero)
                 {
                     horizontal_zero = true;
                     ButtonInput("con4", "horizonalzero");

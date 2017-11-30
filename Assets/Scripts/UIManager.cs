@@ -109,10 +109,10 @@ public class UIManager : MonoBehaviour {
 
 
 
-    void Next()
+    public void Next()
     {
         select = -1;
-        if (menu_select ==1 && CheckReady())
+        if (menu_select == 1 && CheckReady())
         {
             menu_select = 2;
             MenuSelect();
@@ -148,7 +148,10 @@ public class UIManager : MonoBehaviour {
             //Start Game
             if (select==2)
             {
+                Debug.Log("Start game UI MANAGER");
                 StartGame();
+                menu_select = 3;
+                MenuSelect();
             }
         }
         //Game Setting
@@ -213,6 +216,7 @@ public class UIManager : MonoBehaviour {
                 {
                     --win_count;
                 }
+                PlaySetting[0].GetComponent<Text>().text = win_count.ToString();
             }
             else if (select == 1)
             {
@@ -259,9 +263,11 @@ public class UIManager : MonoBehaviour {
         {
             if (!Playerselection[i].GetComponent<PlayerSelection>().ready)
             {
+                Debug.Log("Ready negative");
                 return false;
             }
         }
+        Debug.Log("Ready positive");
         return true;
     }
 

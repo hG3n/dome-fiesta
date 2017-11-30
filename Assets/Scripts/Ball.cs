@@ -11,6 +11,7 @@ public class Ball : MonoBehaviour {
     public float force;
     public float bounce_force;
     public int last_hit;
+    public int team_area_hit;
 
 
 
@@ -48,6 +49,14 @@ public class Ball : MonoBehaviour {
         if (other.tag == "Death")
         {
             Death();
+        }
+        if (other.tag == "Team1")
+        {
+            team_area_hit = 1;
+        }
+        else if (other.tag=="Team2")
+        {
+            team_area_hit = 2;
         }
     }
 

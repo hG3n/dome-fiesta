@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameField : MonoBehaviour {
 
     public int last_hit;
-    public delegate void FieldEvent(int lasthit);
+    public int team_area;
+    public delegate void FieldEvent(int lasthit,int team_area);
     public static event FieldEvent Score;
 
     // Use this for initialization
@@ -23,7 +24,7 @@ public class GameField : MonoBehaviour {
         if (other.tag == "Ball")
         {
             last_hit = other.gameObject.GetComponent<Ball>().last_hit;
-            Score(last_hit);
+            Score(last_hit,team_area);
         }
     }
 }

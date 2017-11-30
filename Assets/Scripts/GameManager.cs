@@ -22,8 +22,11 @@ public class GameManager : MonoBehaviour {
     public int win_score = 10;
     public int world_select;
 
+    public GameObject UIManager;
     public delegate void GameManagerEvent(int id);
     public static event GameManagerEvent addscore;
+    public delegate void PlayEvent(bool start);
+    public static event PlayEvent Startgame;
     
     
 	// Use this for initialization
@@ -51,11 +54,15 @@ public class GameManager : MonoBehaviour {
 
     public void GameStart()
     {
-        // 2 TEAMS
+        //2 TEAMS
         //Create Blocks
         //Spawn Player
         //Timer
         //Spawn Ball
+        InitializePlayer();
+        Startgame(true);
+        ResetRound();
+
         
     }
 
@@ -78,7 +85,7 @@ public class GameManager : MonoBehaviour {
     {
         if (player_count == 2)
         {
-            if (team_count > Teams.Count) { team_count = Teams.Count; }
+            /*if (team_count > Teams.Count) { team_count = Teams.Count; }
             for (int i = 0; i < team_count; ++i)
             {
                 float tmp_id = Teams[i].GetComponent<Team>().team_id;
@@ -90,7 +97,21 @@ public class GameManager : MonoBehaviour {
                         Teams[i].GetComponent<Team>().AddPlayer(PlayerList[a]);
                     }
                 }
+            }*/
+            for (int i = 0; i < 2; ++i)
+            {
+                for (int a = 0; a < 2; ++a)
+                {
+                    string tmp1 = PlayerList[i].GetComponentInChildren<player>().Controller;
+                    string tmp2 = UIManager.GetComponent<UIManager>().Playerselection[a].GetComponent<PlayerSelection>().Controller;
+                    if ( tmp1 == tmp2)
+                    {
+                        Transform spawn = UIManager.GetComponent<UIManager>().Playerselection[a].GetComponent<PlayerSelection>().spawn;
+                        Instantiate(PlayerList[i], spawn.position, spawn.rotation);
+                    }
+                }
             }
+   
         }
         else if (player_count == 4)
         {
@@ -108,7 +129,7 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    void Score_Ball(int lasthit)
+    void Score_Ball(int lasthit, int team_area)
     {
         //Debug.Log("Game Field ID: " + id);
         //Debug.Log("Last Hit ID: " + lasthit);
@@ -117,7 +138,7 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("All Players failed.");
         }
-        else if (lasthit >= 0)
+        else if (lasthit >= 0 && lasthit != team_area)
         {
             Teams[lasthit].GetComponent<Team>().score += 1;
         }
@@ -146,6 +167,7 @@ public class GameManager : MonoBehaviour {
 
     void PlayerReady(bool ready, int team, string controller, int skin)
     {
+        Debug.Log("Player Ready");
         if (CheckPlayer(controller))
         {
             AddPlayer(skin, team);
@@ -159,9 +181,11 @@ public class GameManager : MonoBehaviour {
         {
             if (controller == PlayerList[i].GetComponentInChildren<player>().Controller)
             {
+                Debug.Log("Check Player negative");
                 return false;
             }
         }
+        Debug.Log("Check Player positive");
         return true;
     }
 

@@ -29,10 +29,17 @@ public class player : MonoBehaviour {
     private void OnEnable()
     {
         ControlUnit.ButtonInput += GetInput;
+        GameManager.Startgame += Gamestart;
     }
     private void OnDisable()
     {
         ControlUnit.ButtonInput -= GetInput;
+        GameManager.Startgame -= Gamestart;
+    }
+
+    public void Gamestart(bool start)
+    {
+        play = start;
     }
 
     public void GetInput(string source, string button)
@@ -68,7 +75,7 @@ public class player : MonoBehaviour {
         {
             direction = 1;
         }
-        else
+        else if (value == 0)
         {
             direction = 0;
         }

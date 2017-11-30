@@ -19,7 +19,7 @@ public class PlayerSelection : MonoBehaviour {
     public Text team_text;
     public Text player_text;
     public int team_number = 0;
-    public int select_skin;
+    public int select_skin = 0;
     public int select;
     public string Controller;
 
@@ -29,7 +29,7 @@ public class PlayerSelection : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        player_text = this.GetComponent<Text>();
+        //player_text = this.GetComponent<Text>();
         team_text.text = "Team " + team_number.ToString();
     }
 
@@ -122,6 +122,7 @@ public class PlayerSelection : MonoBehaviour {
                 Window[i].SetActive(true);
             }
         }
+        CreateCharacter();
         UIManager.GetComponent<UIManager>().CheckActivate();
     }
 
@@ -227,6 +228,8 @@ public class PlayerSelection : MonoBehaviour {
             ready_text.SetActive(true);
             player_text.color = Color.green;
             Ready(ready, team_number, Controller, select_skin);
+            UIManager.GetComponent<UIManager>().Next();
+            Destroy(Skin);
             
         }
         else
@@ -249,7 +252,7 @@ public class PlayerSelection : MonoBehaviour {
 
     public void SelectTeam(int value)
     {
-        if (value > 0)
+        /*if (value > 0)
         {
             if (team_number >= GameManager.GetComponent<GameManager>().team_count)
             {
@@ -271,6 +274,7 @@ public class PlayerSelection : MonoBehaviour {
                 --team_number;
             }
         }
+        */
         team_text.text = "Team " + team_number.ToString();
     }
 
