@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour {
     public List<GameObject> GameSetting;
     public List<GameObject> PlaySetting;
     public List<GameObject> Pause;
+    public List<GameObject> PlayScreen;
+    public List<GameObject> Countdown;
 
     public bool play;
     public bool pause;
@@ -436,6 +438,25 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
+    public void SetCoundown(int playercount,int value)
+    {
+        if (value == -1)
+        {
+            for (int i = 0; i < playercount; ++i)
+            {
+                Countdown[i].SetActive(false);
+                Countdown[i].GetComponent<Text>().text = value.ToString();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < playercount; ++i)
+            {
+                Countdown[i].SetActive(true);
+                Countdown[i].GetComponent<Text>().text = value.ToString();
+            }
+        }
 
-    
+    }
+
 }

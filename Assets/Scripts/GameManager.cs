@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour {
         //Spawn Player
         //Timer
         //Spawn Ball
+        Countdown();
         InitializePlayer();
         Startgame(true);
         ResetRound();
@@ -121,7 +122,17 @@ public class GameManager : MonoBehaviour {
 
     void InitializeWorld()
     {
-
+        for (int i = 0; i<World.Count;++i)
+        {
+            if (i == world_select)
+            {
+                World[i].SetActive(true);
+            }
+            else
+            {
+                World[i].SetActive(false);
+            }
+        }
     }
 
     void InitializeAI()
@@ -131,6 +142,7 @@ public class GameManager : MonoBehaviour {
 
     void Score_Ball(int lasthit, int team_area)
     {
+        //Compares Lat Hit of Ball with Gamefield of Team
         //Debug.Log("Game Field ID: " + id);
         //Debug.Log("Last Hit ID: " + lasthit);
         Debug.Log("Add Score to Team " + lasthit);
@@ -165,6 +177,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    void WinRound()
+    {
+
+    }
+
     void PlayerReady(bool ready, int team, string controller, int skin)
     {
         Debug.Log("Player Ready");
@@ -187,6 +204,14 @@ public class GameManager : MonoBehaviour {
         }
         Debug.Log("Check Player positive");
         return true;
+    }
+    IEnumerator Countdown()
+    {
+        for (int i = 3; i >= -1; --i)
+        {
+            UIManager.GetComponent<UIManager>().SetCoundown(player_count ,i);
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 
     private void ResetRound()

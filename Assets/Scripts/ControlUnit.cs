@@ -13,8 +13,8 @@ public class ControlUnit : MonoBehaviour {
     public bool vertical;
     public bool jump;
     public bool back;
-    /*  keyboard1
-     *  keyboard2
+    /*  keyboard1  IMPLEMENT THIS
+     *  keyboard2  AND THIS
      *  con1
      *  con2
      *  con3
@@ -127,7 +127,8 @@ public class ControlUnit : MonoBehaviour {
                 vertical = true;
             }
         }
-        
+        // IMPLEMENT KEYBOARD 1 AND KEYBOARD 2
+
     }
 
     void HorizontalInput()
@@ -253,6 +254,7 @@ public class ControlUnit : MonoBehaviour {
                 horizontal = true;
             }
         }
+        // IMPLEMENT KEYBOARD 1 AND KEYBOARD 2
 
     }
 
@@ -314,7 +316,7 @@ public class ControlUnit : MonoBehaviour {
                 jump = true;
             }
         }
-
+        // IMPLEMENT KEYBOARD 1 AND KEYBOARD 2
 
 
     }
@@ -377,6 +379,7 @@ public class ControlUnit : MonoBehaviour {
                 back = true;
             }
         }
+        // IMPLEMENT KEYBOARD 1 AND KEYBOARD 2
 
     }
 }

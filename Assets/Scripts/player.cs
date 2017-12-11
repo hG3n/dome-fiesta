@@ -44,6 +44,7 @@ public class player : MonoBehaviour {
 
     public void GetInput(string source, string button)
     {
+        //Receives Input Data from Controller
         if (Controller == source)
         {
             if (button == "jump")
@@ -67,6 +68,7 @@ public class player : MonoBehaviour {
 
     public void SelectHorizontal(int value)
     {
+        //Decides to move sidewards(1,-1) or stand still (0)
         if (value < 0)
         {
             direction = -1;
@@ -84,6 +86,7 @@ public class player : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate ()
         {
+            //Move only if game is started
             if (play)
             {
                 Movement();
@@ -92,7 +95,9 @@ public class player : MonoBehaviour {
             //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
             //rigid.AddRelativeForce(movement);
 
-
+            
+           //Animation();
+            
            // Vector3 target = new Vector3(area.transform.position.x, transform.position.y, area.transform.position.z);
             transform.LookAt(area.transform.position);
             if (rigid.velocity.magnitude > maxspeed)
@@ -113,6 +118,19 @@ public class player : MonoBehaviour {
     {
         movement = right.transform.position * direction * speed * Time.deltaTime;
         rigid.AddForce(movement);
+    }
+
+    void Animation()
+    {
+        //Set Animation State
+        //IDLE
+        //MOVE (left and right)
+        //JUMP
+        //WIN
+        //LOOSE
+
+
+
     }
 
     private void OnTriggerStay(Collider other)
