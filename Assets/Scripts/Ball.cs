@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour {
 
+    public delegate void BallEvent(GameObject ball);
+    public static event BallEvent deathball;
+
+    public delegate void Sound_Event(AudioSource source, string value);
+    public static event Sound_Event Score_Sound;
+
     public Rigidbody rigid;
     public GameObject death;
     public float speed;
     public Vector3 velocity;
     public float force;
     public float bounce_force;
-    public int last_hit;
-    public int team_area_hit;
+
 
 
 
@@ -44,26 +49,19 @@ public class Ball : MonoBehaviour {
             Vector3 dir = transform.position - other.transform.position;
             rigid.velocity = Vector3.zero;
             rigid.AddForce(dir*bounce_force,ForceMode.Impulse);
-            last_hit = other.gameObject.GetComponent<player>().team_id;
         }
         if (other.tag == "Death")
         {
             //Death();
         }
-        if (other.tag == "Team1")
-        {
-            team_area_hit = 1;
-        }
-        else if (other.tag=="Team2")
-        {
-            team_area_hit = 2;
-        }
+
     }
 
     public void Death()
     {
         Instantiate(death,transform.position,transform.rotation);
-        Destroy(transform.parent.gameObject);
+        Score_Sound(GetComponent<AudioSource>(), "score");
+        deathball(this.gameObject.transform.parent.gameObject);
     }
 
 }

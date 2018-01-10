@@ -8,15 +8,26 @@ public class UIManager : MonoBehaviour {
     public delegate void UI_Event(string value);
     public static event UI_Event Click;
 
-    public GameObject GameManager;
+    public delegate void Sound_Event(AudioSource source, string value);
+    public static event Sound_Event UI_Sound;
+
+    public delegate void Music_Event(string value);
+    public static event Music_Event UI_Music;
+    public static event Music_Event UI_Music_Setting;
+    public static event Music_Event UI_Sound_Setting;
+
+    public GameObject Gamemanager;
     public List<GameObject> Menu;
     public List<GameObject> Game_Menu;
+    public List<GameObject> Mode_Setting;
     public List<GameObject> Playerselection;
     public List<GameObject> GameSetting;
     public List<GameObject> PlaySetting;
     public List<GameObject> Pause;
-    public List<GameObject> PlayScreen;
+    public List<GameObject> TeamScore;
     public List<GameObject> Countdown;
+    public List<GameObject> WinScreen;
+    public List<GameObject> WinText;
 
     public bool play;
     public bool pause;
@@ -29,26 +40,46 @@ public class UIManager : MonoBehaviour {
     //Settings
     public int win_count = 10;
     public int select_world = 0;
+    public int gamemode = 0;
+    public int teamcomp = 0;
 
 
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         MenuSelect();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         if (!play || pause)
         {
             Input_Controller();
         }
-	}
+    }
+
+    private void OnEnable()
+    {
+        GameManager.FinishGame += GameEnd;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.FinishGame -= GameEnd;
+    }
 
 
 
+    void GameEnd(bool value)
+    {
+        if (value)
+        {
+            Debug.Log("Game Ends");
+        }
+    }
+    
     void Input_Controller()
     {
         //Joystick1
@@ -70,8 +101,8 @@ public class UIManager : MonoBehaviour {
         {
             hori_con = true;
         }
-        if (Input.GetAxis("Vertical1")!=0)
-        { 
+        if (Input.GetAxis("Vertical1") != 0)
+        {
             if (Input.GetAxis("Vertical1") > 0 && vert_con)
             {
                 VerticalInput(1);
@@ -89,7 +120,7 @@ public class UIManager : MonoBehaviour {
             vert_con = true;
         }
         //Button A
-        if (Input.GetKey("joystick button 0"))
+        if (Input.GetKey("joystick 1 button 0"))
         {
             ButtonSelect();
             Debug.Log("pressed Button A");
@@ -114,16 +145,24 @@ public class UIManager : MonoBehaviour {
     public void Next()
     {
         select = -1;
-        if (menu_select == 1 && CheckReady())
+        if (menu_select == 1)
         {
-            menu_select = 2;
+            Gamemanager.GetComponent<GameManager>().SetTeamMode(teamcomp);
+            Gamemanager.GetComponent<GameManager>().SetGameMode(gamemode);
+            Debug.Log("Set Team Composition and Game Mode");
+        }
+        else if (menu_select == 2 && CheckReady())
+        {
+            Debug.Log("Next to Play Setting");
+            menu_select = 3;
             MenuSelect();
         }
     }
 
     void Back()
     {
-
+        --menu_select;
+        MenuSelect();
     }
 
     public void ButtonSelect()
@@ -144,20 +183,34 @@ public class UIManager : MonoBehaviour {
                 MenuSelect();
             }
         }
-        //Play Setting
-        else if (menu_select==2)
+        //Mode Setting
+        else if (menu_select == 1)
         {
-            //Start Game
-            if (select==2)
+            //Next
+            if (select == 2)
             {
-                Debug.Log("Start game UI MANAGER");
-                StartGame();
-                menu_select = 3;
+                Debug.Log("Next to Player Selection");
+                Gamemanager.GetComponent<GameManager>().PlayerList.Clear();
+                Next();
+                menu_select = 2;
                 MenuSelect();
             }
         }
+        //Play Setting
+        else if (menu_select == 3)
+        {
+            //Start Game
+            if (select == 2)
+            {
+                Debug.Log("Start game UI MANAGER");
+                StartGame();
+                menu_select = 4;
+                MenuSelect();
+                UI_Music(select_world.ToString());
+            }
+        }
         //Game Setting
-        else if (menu_select == 4)
+        else if (menu_select == 5)
         {
             //Music
             if (select == 0)
@@ -170,7 +223,7 @@ public class UIManager : MonoBehaviour {
                 PauseGame(false);
             }
             //Back
-            else if (select == GameSetting.Count-1)
+            else if (select == GameSetting.Count - 1)
             {
                 //From Game to Pause Menu
                 if (play && pause)
@@ -186,8 +239,34 @@ public class UIManager : MonoBehaviour {
                 }
             }
         }
+        else if (menu_select == 6)
+        {
+            //Play Again
+            if (select == 0)
+            {
+                Gamemanager.GetComponent<GameManager>().Rematch();
+                for (int i = 0; i < TeamScore.Count; ++i)
+                {
+                    TeamScore[i].GetComponent<Text>().text = 0.ToString();
+                }
+                StartGame();
+                menu_select = 4;
+                MenuSelect();
+            }
+            //Main Menu
+            else if (select == 1)
+            {
+                Gamemanager.GetComponent<GameManager>().ClearSetting();
+                for (int i = 0; i < TeamScore.Count; ++i)
+                {
+                    TeamScore[i].GetComponent<Text>().text = 0.ToString();
+                }
+                menu_select = 0;
+                MenuSelect();
+            }
+        }
         //Pause Setting
-        else if (menu_select == Menu.Count-1)
+        else if (menu_select == Menu.Count - 1)
         {
             //Game Setting
             if (select == 0)
@@ -201,12 +280,54 @@ public class UIManager : MonoBehaviour {
                 PauseGame(false);
             }
         }
+        UI_Sound(GetComponent<AudioSource>(),"select");
     }
 
     public void HorizontalInput(int value)
     {
-        //Play Setting
         if (menu_select == 2)
+        {
+            if (select == 0)
+            {
+                if (value > 0)
+                {
+                    ++teamcomp;
+                    if (Gamemanager.GetComponent<GameManager>().TeamSetting.Count<teamcomp)
+                    {
+                        teamcomp = 0;
+                    }
+                }
+                else
+                {
+                    --teamcomp;
+                    if (0>teamcomp)
+                    {
+                        teamcomp = 0;
+                    }
+                }
+            }
+            else if (menu_select == 1)
+            {
+                if (value > 0)
+                {
+                    ++gamemode;
+                    if (Gamemanager.GetComponent<GameManager>().TeamSetting.Count < gamemode)
+                    {
+                        gamemode = 0;
+                    }
+                }
+                else
+                {
+                    --gamemode;
+                    if (0 > gamemode)
+                    {
+                        gamemode = 0;
+                    }
+                }
+            }
+        }
+        //Play Setting
+        else if (menu_select == 3)
         {
             if (select == 0)
             {
@@ -230,13 +351,13 @@ public class UIManager : MonoBehaviour {
                 {
                     --select_world;
                 }
-                if (GameManager.GetComponent<GameManager>().World.Count <= select_world)
+                if (Gamemanager.GetComponent<GameManager>().World.Count <= select_world)
                 {
                     select_world = 0;
                 }
                 else if (0 > select_world)
                 {
-                    select_world = GameManager.GetComponent<GameManager>().World.Count - 1;
+                    select_world = Gamemanager.GetComponent<GameManager>().World.Count - 1;
                 }
             }
         }
@@ -246,52 +367,54 @@ public class UIManager : MonoBehaviour {
     {
         //Up
         if (value == 1)
-            {
-                ++select;
-                ColorSelect();
-            }
+        {
+            ++select;
+            ColorSelect();
+        }
         //Down
         else if (value == -1)
-            {
-                --select;
-                ColorSelect();
-            }     
+        {
+            --select;
+            ColorSelect();
+        }
     }
     public bool CheckReady()
     {
         //Check if ever player is ready
-        int player_size = GameManager.GetComponent<GameManager>().player_count;
-        for (int i = 0; i < player_size;++i)
+        int player_size = Gamemanager.GetComponent<GameManager>().playercount;
+        for (int i = 0; i < player_size; ++i)
         {
             if (!Playerselection[i].GetComponent<PlayerSelection>().ready)
             {
-                Debug.Log("Ready negative");
+                Debug.Log("Ready negative" + i.ToString());
                 return false;
             }
         }
         Debug.Log("Ready positive");
         return true;
+
     }
 
-    public void CheckActivate()
+    public void Win(int teamnummber)
     {
-        //Check if ever player is ready
-        int player_count = 0;
-        for (int i = 0; i < Playerselection.Count; ++i)
+        for (int i = 0; i < WinText.Count; ++i)
         {
-            if (Playerselection[i].GetComponent<PlayerSelection>().activate)
-            {
-                ++player_count;
-            }
+            WinText[i].gameObject.SetActive(true);
+            WinText[i].GetComponent<Text>().text = "TEAM " + teamnummber.ToString() + " WINS";
         }
-        GameManager.GetComponent<GameManager>().player_count = player_count;
+        menu_select = 6;
+        MenuSelect();
     }
 
     public void StartGame()
     {
-        GameManager.GetComponent<GameManager>().win_score = win_count;
-        GameManager.GetComponent<GameManager>().world_select = select_world;
-        GameManager.GetComponent<GameManager>().GameStart();
+        for (int i = 0; i < WinText.Count; ++i)
+        {
+            WinText[i].gameObject.SetActive(false);
+        }
+        Gamemanager.GetComponent<GameManager>().win_score = win_count;
+        Gamemanager.GetComponent<GameManager>().world_select = select_world;
+        Gamemanager.GetComponent<GameManager>().GameStart();
     }
 
     public void PauseGame(bool pause)
@@ -377,8 +500,27 @@ public class UIManager : MonoBehaviour {
                 }
             }
         }
-        //Play Setting
-        else if (menu_select == 2)
+        //Mode Setting
+        else if (menu_select == 1)
+        {
+            if (select >= Mode_Setting.Count || select < 0)
+            {
+                select = 0;
+            }
+
+            for (int i = 0; i < Mode_Setting.Count; ++i)
+            {
+                if (i == select)
+                {
+                    Mode_Setting[i].GetComponent<Text>().color = Color.red;
+                }
+                else
+                {
+                    Mode_Setting[i].GetComponent<Text>().color = Color.black;
+                }
+            }
+        }
+        else if (menu_select == 3)
         {
             if (select >= PlaySetting.Count || select < 0)
             {
@@ -398,7 +540,7 @@ public class UIManager : MonoBehaviour {
             }
         }
         //Game Setting
-        else if (menu_select == 4)
+        else if (menu_select == 5)
         {
             if (select >= GameSetting.Count || select < 0)
             {
@@ -414,6 +556,26 @@ public class UIManager : MonoBehaviour {
                 else
                 {
                     GameSetting[i].GetComponent<Text>().color = Color.black;
+                }
+            }
+        }
+        //Rematch Menu
+        else if (menu_select == 6)
+        {
+            if (select >= WinScreen.Count || select < 0)
+            {
+                select = 0;
+            }
+
+            for (int i = 0; i < WinScreen.Count; ++i)
+            {
+                if (i == select)
+                {
+                    WinScreen[i].GetComponent<Text>().color = Color.red;
+                }
+                else
+                {
+                    WinScreen[i].GetComponent<Text>().color = Color.black;
                 }
             }
         }
@@ -457,6 +619,16 @@ public class UIManager : MonoBehaviour {
             }
         }
 
+    }
+
+    public void UpdateScore(List<int> scorelist)
+    {
+        Debug.Log("Update Score");
+        for (int i = 0; i < TeamScore.Count;++i)
+        {
+            Debug.Log("Score: " + scorelist[i].ToString());
+            TeamScore[i].GetComponent<Text>().text = scorelist[i].ToString();
+        }
     }
 
 }

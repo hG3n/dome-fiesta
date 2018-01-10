@@ -28,7 +28,7 @@ public class ControlUnit : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         VerticalInput();
         HorizontalInput();

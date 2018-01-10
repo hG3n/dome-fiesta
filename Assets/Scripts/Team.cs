@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Team : MonoBehaviour {
 
-    public List<GameObject> player;
     public string teamname;
     public int team_id;
-    public float score;
+    public int score;
+    public int round_score;
     public Text team_text;
     public Text score_text;
 
@@ -26,8 +26,10 @@ public class Team : MonoBehaviour {
         score_text.text = score.ToString();
 	}
 
-    public void AddPlayer(GameObject Player)
+    void Clear()
     {
-        player.Add(Player);
+        score = 0;
+        round_score = 0;
     }
+
 }

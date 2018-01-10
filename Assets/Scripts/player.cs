@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class player : MonoBehaviour {
 
+    public delegate void Sound_Event(AudioSource source,string value);
+    public static event Sound_Event Jump_Sound;
+
     public GameObject area;
     public GameObject left;
     public GameObject right;
@@ -16,9 +19,7 @@ public class player : MonoBehaviour {
     public bool ground;
     public float maxspeed;
     public string Controller;
-    public int team_id;
     public bool play;
-
     
     // Use this for initialization
 	void Start ()
@@ -41,7 +42,7 @@ public class player : MonoBehaviour {
     {
         play = start;
     }
-
+     
     public void GetInput(string source, string button)
     {
         //Receives Input Data from Controller
@@ -91,14 +92,6 @@ public class player : MonoBehaviour {
             {
                 Movement();
             }
-
-            //movement = Vector3.right * Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-            //rigid.AddRelativeForce(movement);
-
-            
-           //Animation();
-            
-           // Vector3 target = new Vector3(area.transform.position.x, transform.position.y, area.transform.position.z);
             transform.LookAt(area.transform.position);
             if (rigid.velocity.magnitude > maxspeed)
             {
@@ -110,6 +103,7 @@ public class player : MonoBehaviour {
     {
         if (ground)
         {
+            Jump_Sound(GetComponent<AudioSource>(), "jump");
             rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
         }
     }

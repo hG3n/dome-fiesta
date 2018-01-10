@@ -5,20 +5,18 @@ using UnityEngine.UI;
 
 public class PlayerSelection : MonoBehaviour {
 
-    public delegate void PlayerSelect(bool ready, int team, string controller, int skin);
+    public delegate void PlayerSelect(bool ready, string controller, int skin);
     public static event PlayerSelect Ready;
 
     public GameObject GameManager;
     public GameObject ControlManager;
     public GameObject UIManager;
     public List<GameObject> Select;
-    public List<GameObject> Window;
     public GameObject ready_text;
     public GameObject Skin;
     public Transform spawn;
-    public Text team_text;
     public Text player_text;
-    public int team_number = 0;
+    public int playerid;
     public int select_skin = 0;
     public int select;
     public string Controller;
@@ -29,8 +27,7 @@ public class PlayerSelection : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        //player_text = this.GetComponent<Text>();
-        team_text.text = "Team " + team_number.ToString();
+
     }
 
     private void OnEnable()
@@ -111,19 +108,7 @@ public class PlayerSelection : MonoBehaviour {
 
     public void Initialize()
     {
-        for (int i = 0;i<Window.Count;++i)
-        {
-            if (i==0)
-            {
-                Window[i].SetActive(false);
-            }
-            else
-            {
-                Window[i].SetActive(true);
-            }
-        }
         CreateCharacter();
-        UIManager.GetComponent<UIManager>().CheckActivate();
     }
 
     public void GetInput(string source, string button)
@@ -137,14 +122,6 @@ public class PlayerSelection : MonoBehaviour {
             else if (button == "back")
             {
                 Back();
-            }
-            else if (button == "vert")
-            {
-                SelectVertical(1);
-            }
-            else if (button == "vertneg")
-            {
-                SelectVertical(-1);
             }
             else if (button == "horizont")
             {
@@ -161,80 +138,25 @@ public class PlayerSelection : MonoBehaviour {
     {
         if (value < 0)
         {
-            if (select == 0)
-            {
-                SelectTeam(-1);
-            }
-            else if (select == 1)
-            {
                 SelectSkin(-1);
-            }
         }
         else if (value > 0)
         {
-            if (select == 0)
-            {
-                SelectTeam(1);
-            }
-            else if (select == 1)
-            {
                 SelectSkin(1);
-            }
-        }
-    }
-
-    public void SelectVertical(int value)
-    {
-        if (value > 0)
-        {
-            if (select >= Select.Count-1)
-            {
-                select = 0;
-            }
-            else
-            {
-                ++select;
-            }
-        }
-        else if (value < 0)
-        {
-            if (select <= 0)
-            {
-                select = Select.Count-1;
-            }
-            else
-            {
-                --select;
-            }
-        }
-        for (int i = 0; i <Select.Count;++i)
-        {
-            if (i == select)
-            {
-                Select[i].active = true;
-            }
-            else
-            {
-                Select[i].active = false;
-            }
         }
     }
 
     public void Next()
     {
-        if (select == Select.Count - 1)
+        if (Skin != null)
         {
             ready = true;
             ready_text.SetActive(true);
             player_text.color = Color.green;
-            Ready(ready, team_number, Controller, select_skin);
+            Ready(ready, Controller, select_skin);
             UIManager.GetComponent<UIManager>().Next();
             Destroy(Skin);
             
-        }
-        else
-        {
-            SelectVertical(1);
         }
     }
 
@@ -245,37 +167,8 @@ public class PlayerSelection : MonoBehaviour {
             ready = false;
             ready_text.SetActive(false);
             player_text.color = Color.black;
-            Ready(ready, team_number, Controller, select_skin);
+            Ready(ready, Controller, select_skin);
         }
-    }
-
-
-    public void SelectTeam(int value)
-    {
-        /*if (value > 0)
-        {
-            if (team_number >= GameManager.GetComponent<GameManager>().team_count)
-            {
-                team_number = 0;               
-            }
-            else
-            {
-                ++team_number;
-            }           
-        }
-        else if (value < 0)
-        {
-            if (team_number <= 0)
-            {
-                team_number = GameManager.GetComponent<GameManager>().team_count-1;
-            }
-            else
-            {
-                --team_number;
-            }
-        }
-        */
-        team_text.text = "Team " + team_number.ToString();
     }
 
     public void SelectSkin(int value)
@@ -308,6 +201,7 @@ public class PlayerSelection : MonoBehaviour {
         }
         else
         {
+            Debug.Log("Delete Character");
             Destroy(Skin);
             CreateCharacter();
         }
@@ -316,7 +210,14 @@ public class PlayerSelection : MonoBehaviour {
     public void CreateCharacter()
     {
         Debug.Log("Load new Character");
-        Skin = Instantiate(GameManager.GetComponent<GameManager>().PlayerSkins[select_skin], spawn.position, spawn.rotation);
+        Debug.Log("Select Number: " + select_skin.ToString());
+        try {
+            Skin = Instantiate(GameManager.GetComponent<GameManager>().PlayerSkins[select_skin], spawn.position, spawn.rotation);
+        }
+        catch (System.Exception n)
+        {
+            Debug.LogException(n,this);
+        }
     }
 
 }

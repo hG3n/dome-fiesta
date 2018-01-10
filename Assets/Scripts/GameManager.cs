@@ -5,28 +5,37 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     //Team
-    public List<GameObject> Teams;
+
     public List<GameObject> PlayerList;
+    public List<GameObject> ActivePlayer;
     public List<GameObject> BallList;
+    public GameObject GameFieldBlock;
 
     public List<GameObject> PlayerSkins;
     public List<GameObject> BallSkin;
     public List<GameObject> FieldBlock;
     public List<GameObject> World;
+    public List<string> GameMode;
+    public List<string> TeamSetting;
+    public List<int> Teamscore;
+    public List<Transform> Spawns;
+    public List<string> Controller;
 
     //Settings
     public int fieldblocks;
-    public string gamemode;
-    public int player_count;
-    public int team_count;
+    public int playercount;
+    public int gamemode = 0;
+    public int teamcomp = 0;
     public int win_score = 10;
     public int world_select;
+    public int max_ball_count = 1;
 
     public GameObject UIManager;
     public delegate void GameManagerEvent(int id);
     public static event GameManagerEvent addscore;
     public delegate void PlayEvent(bool start);
     public static event PlayEvent Startgame;
+    public static event PlayEvent FinishGame;
     
     
 	// Use this for initialization
@@ -39,12 +48,14 @@ public class GameManager : MonoBehaviour {
     {
         GameField.Score +=Score_Ball;
         PlayerSelection.Ready += PlayerReady;
+        Ball.deathball += DestroyBall;
     }
 
     private void OnDisable()
     {
         GameField.Score -= Score_Ball;
         PlayerSelection.Ready -= PlayerReady;
+        Ball.deathball += DestroyBall;
     }
 
     // Update is called once per frame
@@ -62,61 +73,31 @@ public class GameManager : MonoBehaviour {
         Countdown();
         InitializePlayer();
         Startgame(true);
-        ResetRound();
+        NextRound();
 
         
     }
 
     void InitializeArea()
     {
-        //TODO
-        //Create Blocks by Angle
-        //
-        if (fieldblocks == 2)
-        {
-            Instantiate(FieldBlock[0],transform.position,transform.rotation);
-        }
-        else if (fieldblocks == 4)
-        {
-            Instantiate(FieldBlock[1], transform.position, transform.rotation);
-        }
+        Debug.Log("Initialze Area");
+        Instantiate(FieldBlock[fieldblocks],transform.position,transform.rotation);
     }
 
     void InitializePlayer()
     {
-        if (player_count == 2)
+        Debug.Log("Initialize Player");
+        for (int i = 0; i<PlayerList.Count;++i)
         {
-            /*if (team_count > Teams.Count) { team_count = Teams.Count; }
-            for (int i = 0; i < team_count; ++i)
+            try
             {
-                float tmp_id = Teams[i].GetComponent<Team>().team_id;
-                for (int a = 0; a < PlayerList.Count;++a)
-                {
-                    int tmp_pl_id = PlayerList[a].GetComponent<player>().team_id;
-                    if (tmp_id == tmp_pl_id)
-                    {
-                        Teams[i].GetComponent<Team>().AddPlayer(PlayerList[a]);
-                    }
-                }
-            }*/
-            for (int i = 0; i < 2; ++i)
-            {
-                for (int a = 0; a < 2; ++a)
-                {
-                    string tmp1 = PlayerList[i].GetComponentInChildren<player>().Controller;
-                    string tmp2 = UIManager.GetComponent<UIManager>().Playerselection[a].GetComponent<PlayerSelection>().Controller;
-                    if ( tmp1 == tmp2)
-                    {
-                        Transform spawn = UIManager.GetComponent<UIManager>().Playerselection[a].GetComponent<PlayerSelection>().spawn;
-                        Instantiate(PlayerList[i], spawn.position, spawn.rotation);
-                    }
-                }
+                GameObject tmp = Instantiate(PlayerList[i], Spawns[i]);
+                tmp.GetComponentInChildren<player>().Controller = Controller[i];
             }
-   
-        }
-        else if (player_count == 4)
-        {
-
+            catch(System.Exception n)
+            {
+                Debug.Log(n);
+            }
         }
     }
 
@@ -135,60 +116,100 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void InitializeAI()
+    void Score_Ball(int team)
     {
-
-    }
-
-    void Score_Ball(int lasthit, int team_area)
-    {
-        //Compares Lat Hit of Ball with Gamefield of Team
-        //Debug.Log("Game Field ID: " + id);
-        //Debug.Log("Last Hit ID: " + lasthit);
-        Debug.Log("Add Score to Team " + lasthit);
-        if (lasthit == 99)
-        {
-            Debug.Log("All Players failed.");
-        }
-        else if (lasthit >= 0 && lasthit != team_area)
-        {
-            Teams[lasthit].GetComponent<Team>().score += 1;
-        }
+        Debug.Log("Ball Scored");
+        ++Teamscore[team];
+        UIManager.GetComponent<UIManager>().UpdateScore(Teamscore);
         CheckScore();
-        ResetRound();
-
+        NextRound();
     }
 
-    void AddPlayer(int skin, int teamid)
+    public void ClearSetting()
     {
-        PlayerList.Add(PlayerSkins[skin]);
-        PlayerList[PlayerList.Count-1].GetComponentInChildren<player>().team_id = teamid;
+        Debug.Log("Clear Settings");
+        PlayerList.Clear();
+        Controller.Clear();
+        BallList.Clear();
+        for (int i =0; i<Teamscore.Count;++i)
+        {
+            Teamscore[i] = 0;
+        }
+        Destroy(GameFieldBlock);
+        fieldblocks = 0;
+        playercount = 0;
+        gamemode = 0;
+        teamcomp = 0;
+        world_select = 0;
+        max_ball_count = 1;
+        win_score = 10;
+    }
+
+    public void Rematch()
+    {
+        for (int i = 0; i < Teamscore.Count; ++i)
+        {
+            Teamscore[i] = 0;
+        }
+        BallList.Clear();
+        PlayerList.Clear();
+        Controller.Clear();
+        Startgame(true);
     }
 
     void CheckScore()
     {
-        for (int i = 0; i < Teams.Count; ++i)
+        for (int i = 0; i < Teamscore.Count; ++i)
         {
-            Team tmp_team = Teams[i].GetComponent<Team>();
-            if (tmp_team.score >= win_score)
+            if (Teamscore[i] >= win_score)
             {
-                Debug.Log("Team " + tmp_team.teamname + " Wins");              
+                Debug.Log("Team " + (i+1).ToString() + " Wins");
+                WinRound(i);
             }
         }
     }
 
-    void WinRound()
+    public void SetGameMode(int mode)
     {
-
+        gamemode = mode;
     }
 
-    void PlayerReady(bool ready, int team, string controller, int skin)
+    public void SetTeamMode(int mode)
+    {
+        teamcomp = mode;
+        //MODE 1V1
+        if (mode == 0)
+        {
+            playercount = 2;
+        }
+        //MODE 2v2
+        else if (mode==1)
+        {
+            playercount = 4;
+        }
+    }
+
+    void WinRound(int value)
+    {
+        Startgame(false);
+        UIManager.GetComponent<UIManager>().Win(value);
+        FinishGame(true);
+    }
+
+    void ClearGame()
+    {
+        PlayerList.Clear();
+        BallList.Clear();
+        Destroy(GameFieldBlock);
+    }
+
+    void PlayerReady(bool ready, string controller, int skin)
     {
         Debug.Log("Player Ready");
         if (CheckPlayer(controller))
         {
-            AddPlayer(skin, team);
-            PlayerList[PlayerList.Count - 1].GetComponentInChildren<player>().Controller = controller;
+            PlayerList.Add(PlayerSkins[skin]);
+            Controller.Add(controller);
         }        
     }
 
@@ -205,18 +226,30 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Check Player positive");
         return true;
     }
+
     IEnumerator Countdown()
     {
         for (int i = 3; i >= -1; --i)
         {
-            UIManager.GetComponent<UIManager>().SetCoundown(player_count ,i);
+            UIManager.GetComponent<UIManager>().SetCoundown(playercount,i);
             yield return new WaitForSeconds(1.0f);
         }
     }
 
-    private void ResetRound()
+    private void NextRound()
     {
         Debug.Log("Spawn Ball");
-        Instantiate(BallSkin[0],transform.position,transform.rotation);
+        if (max_ball_count>BallList.Count)
+        {
+            GameObject ball = Instantiate(BallSkin[0], transform.position, transform.rotation) as GameObject;
+            BallList.Add(ball);
+        }
+        
+    }
+
+    public void DestroyBall(GameObject ball)
+    {
+        BallList.Remove(ball);
+        Destroy(ball.gameObject);
     }
 }
