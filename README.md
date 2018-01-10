@@ -8,17 +8,17 @@ play in my dome - university project 2017 - bauhaus university weimar
 - [x] Controls (Controller & Keyboard)
 - [x] 2 Player Mode
 - [x] 4 Player Mode
-- [ ] Game Logic (Start Game, End Game, Win Screen)
+- [x] Game Logic (Start Game, End Game, Win Screen)
 - [x] Curved UI
-- [ ] Game Menu
-- [ ] Game Settings
-- [ ] Character Selection
-- [ ] Character Skin Selection
-- [ ] Team Selection
-- [ ] World Selection
+- [x] Game Menu
+- [x] Game Settings
+- [x] Character Selection
+- [x] Character Skin Selection
+- [x] Team Selection
+- [x] World Selection
 - [ ] Animation
 - [ ] Game FX
-- [ ] Game Sound
+- [x] Game Sound
 - [ ] Game Models
 ## OPTIONAL TODO
 - [ ] AI
