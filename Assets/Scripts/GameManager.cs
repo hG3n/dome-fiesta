@@ -122,7 +122,11 @@ public class GameManager : MonoBehaviour {
         ++Teamscore[team];
         UIManager.GetComponent<UIManager>().UpdateScore(Teamscore);
         CheckScore();
-        NextRound();
+        if (UIManager.GetComponent<UIManager>().play)
+        {
+            NextRound();
+        }
+
     }
 
     public void ClearSetting()

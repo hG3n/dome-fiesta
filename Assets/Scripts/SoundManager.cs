@@ -5,8 +5,8 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour {
 
 
-    public int SoundVolume = 100;
-    public int MusicVolume = 100;
+	public float SoundVolume = 100;
+    public float MusicVolume = 100;
     public AudioClip SoundJump;
     public AudioClip SoundScore;
     public AudioClip SoundSelect;
@@ -40,28 +40,31 @@ public class SoundManager : MonoBehaviour {
     void Start ()
     {
         MusicSource = GetComponent<AudioSource>();
+		SetMusic("100");
+		SetSound("100");
         PlayMusic("title");       
 	}
 
     void SetSound(string value)
     {
-        SoundVolume = int.Parse(value)/100;
+		SoundVolume = float.Parse(value)/1000;
     }
 
     void SetMusic(string value)
     {
-        MusicVolume = int.Parse(value)/100;
+        MusicVolume = float.Parse(value)/1000;
     }
 
     void PlaySound(AudioSource source,string value)
     {
+		Debug.Log ("Play Sound" + value);
         if (value == "jump")
         {
             source.PlayOneShot(SoundJump,SoundVolume);
         }
         else if (value=="score")
         {
-            source.PlayOneShot(SoundScore, SoundVolume);
+            MusicSource.PlayOneShot(SoundScore, SoundVolume);
         }
         else if (value == "pick")
         {
@@ -80,17 +83,23 @@ public class SoundManager : MonoBehaviour {
 
     void PlayMusic(string value)
     {
-        if (value == "title")
-        {
-            MusicSource.PlayOneShot(Music[0], MusicVolume);
+		Debug.Log("Play Music" + value);
+		MusicSource.Stop ();
+		MusicSource.volume = MusicVolume;
+		if (value == "title")
+		{
+			MusicSource.clip = Music[0];
+            MusicSource.Play();
         }
         else if (value == "world1")
         {
-            MusicSource.PlayOneShot(Music[1], MusicVolume);
+			MusicSource.clip = Music[1];
+            MusicSource.Play();
         }
         else if (value == "world2")
         {
-            MusicSource.PlayOneShot(Music[2], MusicVolume);
+			MusicSource.clip = Music[2];
+            MusicSource.Play();
         }
     }
 

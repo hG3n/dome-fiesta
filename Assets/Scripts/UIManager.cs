@@ -140,8 +140,6 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-
-
     public void Next()
     {
         select = -1;
@@ -206,7 +204,11 @@ public class UIManager : MonoBehaviour {
                 StartGame();
                 menu_select = 4;
                 MenuSelect();
-                UI_Music(select_world.ToString());
+				if (select_world==0)
+				{
+					UI_Music("world1");
+				}
+
             }
         }
         //Game Setting
