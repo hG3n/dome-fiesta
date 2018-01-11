@@ -1,0 +1,27 @@
+Music
+
+"Intro Theme"
+"Grasslands Theme"
+https://opengameart.org/content/platformer-game-music-pack
+Author: 
+CodeManu
+
+
+
+Sound Effects
+
+"Jump"
+https://opengameart.org/content/funny-comic-cartoon-bounce-sound
+Author: 
+Blender Foundation
+(Submitted by Lamoot)
+
+"Win"
+https://opengameart.org/content/level-up-sound-effects
+Author: 
+bart
+
+UI
+https://opengameart.org/content/ui-sound-effects-pack
+Author: 
+ViRiX

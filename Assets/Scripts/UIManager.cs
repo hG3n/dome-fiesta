@@ -120,13 +120,13 @@ public class UIManager : MonoBehaviour {
             vert_con = true;
         }
         //Button A
-        if (Input.GetKey("joystick 1 button 0"))
+        if (Input.GetKeyDown("joystick 1 button 0"))
         {
             ButtonSelect();
             Debug.Log("pressed Button A");
         }
         //Button Start
-        if (Input.GetKey("joystick 1 button 7"))
+        if (Input.GetKeyDown("joystick 1 button 7"))
         {
             Debug.Log("pressed Button Start");
             if (play)
@@ -361,6 +361,7 @@ public class UIManager : MonoBehaviour {
                 }
             }
         }
+        UI_Sound(GetComponent<AudioSource>(), "pick");
     }
 
     public void VerticalInput(int value)
@@ -377,6 +378,7 @@ public class UIManager : MonoBehaviour {
             --select;
             ColorSelect();
         }
+        UI_Sound(GetComponent<AudioSource>(), "pick");
     }
     public bool CheckReady()
     {

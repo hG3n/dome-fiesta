@@ -51,7 +51,7 @@ public class PlayerSelection : MonoBehaviour {
 
     public void SetController()
     {
-        if (Input.GetKey("joystick 1 button 0"))
+        if (Input.GetKeyDown("joystick 1 button 0"))
         {
             if (CheckControl("con1"))
             {
@@ -61,7 +61,7 @@ public class PlayerSelection : MonoBehaviour {
                 Initialize();
             }
         }
-        else if (Input.GetKey("joystick 2 button 0"))
+        else if (Input.GetKeyDown("joystick 2 button 0"))
         {
             if (CheckControl("con2"))
             {
@@ -71,7 +71,7 @@ public class PlayerSelection : MonoBehaviour {
                 Initialize();
             }
         }
-        else if (Input.GetKey("joystick 3 button 0"))
+        else if (Input.GetKeyDown("joystick 3 button 0"))
         {
             if (CheckControl("con3"))
             {
@@ -81,7 +81,7 @@ public class PlayerSelection : MonoBehaviour {
                 Initialize();
             }
         }
-        else if (Input.GetKey("joystick 4 button 0"))
+        else if (Input.GetKeyDown("joystick 4 button 0"))
         {
             if (CheckControl("con4"))
             {

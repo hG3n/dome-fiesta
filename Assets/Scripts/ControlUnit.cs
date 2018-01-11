@@ -13,6 +13,7 @@ public class ControlUnit : MonoBehaviour {
     public bool vertical;
     public bool jump;
     public bool back;
+    public float timepressed;
     /*  keyboard1  IMPLEMENT THIS
      *  keyboard2  AND THIS
      *  con1
@@ -34,6 +35,8 @@ public class ControlUnit : MonoBehaviour {
         HorizontalInput();
         Jump();
         Back();
+
+        
 	}
 
     void VerticalInput()
@@ -263,11 +266,12 @@ public class ControlUnit : MonoBehaviour {
         //Joystick 1 Button A
         if (Source == "con1")
         {
-            if (Input.GetKey("joystick 1 button 0") && jump)
+            if (Input.GetKeyDown("joystick 1 button 0") && jump)
             {
+                jump = false;
                 ButtonInput("con1", "jump");
                 Debug.Log("pressed 1 Button A");
-                jump = false;
+                
             }
             else
             {
@@ -277,7 +281,7 @@ public class ControlUnit : MonoBehaviour {
         //Joystick 2 Button A
         else if (Source == "con2")
         {
-            if (Input.GetKey("joystick 2 button 0") && jump)
+            if (Input.GetKeyDown("joystick 2 button 0") && jump)
             {
                 ButtonInput("con2", "jump");
                 Debug.Log("pressed 2 Button A");
@@ -291,7 +295,7 @@ public class ControlUnit : MonoBehaviour {
         //Joystick 3 Button A
         else if (Source == "con3")
         {
-            if (Input.GetKey("joystick 3 button 0") && jump)
+            if (Input.GetKeyDown("joystick 3 button 0") && jump)
             {
                 ButtonInput("con3", "jump");
                 Debug.Log("pressed 3 Button A");
@@ -305,7 +309,7 @@ public class ControlUnit : MonoBehaviour {
         //Joystick 4 Button A
         else if (Source == "con4")
         {
-            if (Input.GetKey("joystick 4 button 0") && jump)
+            if (Input.GetKeyDown("joystick 4 button 0") && jump)
             {
                 ButtonInput("con4", "jump");
                 Debug.Log("pressed 4 Button A");

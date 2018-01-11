@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour {
     public AudioClip SoundJump;
     public AudioClip SoundScore;
     public AudioClip SoundSelect;
+    public AudioClip SoundPick;
     public AudioClip SoundWin;
 
     public List<AudioClip> Music;
@@ -44,12 +45,12 @@ public class SoundManager : MonoBehaviour {
 
     void SetSound(string value)
     {
-        SoundVolume = int.Parse(value);
+        SoundVolume = int.Parse(value)/100;
     }
 
     void SetMusic(string value)
     {
-        MusicVolume = int.Parse(value);
+        MusicVolume = int.Parse(value)/100;
     }
 
     void PlaySound(AudioSource source,string value)
@@ -61,6 +62,10 @@ public class SoundManager : MonoBehaviour {
         else if (value=="score")
         {
             source.PlayOneShot(SoundScore, SoundVolume);
+        }
+        else if (value == "pick")
+        {
+            source.PlayOneShot(SoundPick, SoundVolume);
         }
         else if (value == "select")
         {
