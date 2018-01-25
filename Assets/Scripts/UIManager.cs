@@ -29,6 +29,9 @@ public class UIManager : MonoBehaviour {
     public List<GameObject> WinScreen;
     public List<GameObject> WinText;
 
+    public GameObject Camera;
+    public float speed = 1;
+
     public bool play;
     public bool pause;
     public int menu_select = 0;
@@ -125,6 +128,12 @@ public class UIManager : MonoBehaviour {
             ButtonSelect();
             Debug.Log("pressed Button A");
         }
+        //Button B
+        if (Input.GetKeyDown("joystick 1 button 1"))
+        {
+            Back();
+            Debug.Log("pressed Button B");
+        }
         //Button Start
         if (Input.GetKeyDown("joystick 1 button 7"))
         {
@@ -137,6 +146,16 @@ public class UIManager : MonoBehaviour {
             {
                 PauseGame(false);
             }
+        }
+        //Rotate Left
+        if (Input.GetKey("joystick 1 button 4"))
+        {
+            Camera.transform.Rotate(new Vector3(0, -1, 0) * Time.deltaTime * speed);
+        }
+        //Rotate Right
+        if (Input.GetKey("joystick 1 button 5"))
+        {
+            Camera.transform.Rotate(new Vector3(0, 1, 0) * Time.deltaTime * speed);
         }
     }
 

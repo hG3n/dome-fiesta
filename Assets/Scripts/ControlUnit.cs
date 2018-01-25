@@ -7,7 +7,9 @@ public class ControlUnit : MonoBehaviour {
     public delegate void ControlEvent(string source, string button);
     public static event ControlEvent ButtonInput;
 
+    public OSC osc;
     public string Source;
+    public string ip;
     public bool horizontal;
     public bool horizontal_zero;
     public bool vertical;
@@ -384,6 +386,47 @@ public class ControlUnit : MonoBehaviour {
             }
         }
         // IMPLEMENT KEYBOARD 1 AND KEYBOARD 2
+
+    }
+
+    void VerticalInputOSC(OscMessage message)
+    {
+        int direction = message.GetInt(0);
+        if (ip == Source)
+        {
+            if (direction < 0)
+            {
+                ButtonInput(ip, "vertneg");
+            }
+            else if (direction > 0)
+            {
+                ButtonInput(ip, "vert");
+            }
+        }
+    }
+
+    void HorizontalInputOSC(OscMessage message)
+    {
+        int direction = message.GetInt(0);
+        if (ip == Source)
+        {
+            if (direction < 0)
+            {
+                ButtonInput(ip, "horizontneg");
+            }
+            else if (direction > 0)
+            {
+                ButtonInput(ip, "horizont");
+            }
+            else
+            {
+                ButtonInput(ip, "horizontalzero");
+            }
+        }
+    }
+
+    void JumpOSC(OscMessage message)
+    {
 
     }
 }
