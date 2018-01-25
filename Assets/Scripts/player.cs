@@ -14,7 +14,7 @@ public class player : MonoBehaviour {
     public float speed;
     public float jump;
     public Vector3 movement;
-    public int direction;
+    public float direction;
     public Rigidbody rigid;
     public bool ground;
     public float maxspeed;
@@ -27,14 +27,21 @@ public class player : MonoBehaviour {
         rigid = GetComponent<Rigidbody>();
 	}
 
+    void Update()
+    {
+        if (play)
+        {
+            HorizontalInput();
+            ButtonInput();
+        }
+    }
+
     private void OnEnable()
     {
-        ControlUnit.ButtonInput += GetInput;
         GameManager.Startgame += Gamestart;
     }
     private void OnDisable()
     {
-        ControlUnit.ButtonInput -= GetInput;
         GameManager.Startgame -= Gamestart;
     }
 
@@ -42,45 +49,64 @@ public class player : MonoBehaviour {
     {
         play = start;
     }
-     
-    public void GetInput(string source, string button)
+
+    void HorizontalInput()
     {
-        //Receives Input Data from Controller
-        if (Controller == source)
+        //Joystick 1
+        if (Controller == "con1")
         {
-            if (button == "jump")
-            {
-                Jump();
-            }
-            else if (button == "horizont")
-            {
-                SelectHorizontal(1);
-            }
-            else if (button == "horizontneg")
-            {
-                SelectHorizontal(-1);
-            }
-            else if (button == "horizontzero")
-            {
-                SelectHorizontal(0);
-            }
+            direction = Input.GetAxis("Horizontal1");
+        }
+        //Joystick 2
+        else if (Controller == "con2")
+        {
+            direction = Input.GetAxis("Horizontal2");
+        }
+        //Joystick 3
+        else if (Controller == "con3")
+        {
+            direction = Input.GetAxis("Horizontal3");
+        }
+        //Joystick 4
+        else if (Controller == "con4")
+        {
+            direction = Input.GetAxis("Horizontal4");
         }
     }
 
-    public void SelectHorizontal(int value)
+    void ButtonInput()
     {
-        //Decides to move sidewards(1,-1) or stand still (0)
-        if (value < 0)
+        //Jump Controller 1
+        if (Controller == "con1")
         {
-            direction = -1;
+            if (Input.GetKeyDown("joystick 1 button 0"))
+            {
+                Jump();
+            }
         }
-        else if (value > 0)
+        //Jump Controller 2
+        else if (Controller == "con2")
         {
-            direction = 1;
+            if (Input.GetKeyDown("joystick 2 button 0"))
+            {
+                Jump();
+            }
         }
-        else if (value == 0)
+        //Jump Controller 3
+        else if (Controller == "con3")
         {
-            direction = 0;
+            if (Input.GetKeyDown("joystick 3 button 0"))
+            {
+                Jump();
+            }
+        }
+        //Jump Controller 4
+        else if (Controller == "con4")
+        {
+            if (Input.GetKeyDown("joystick 4 button 0"))
+            {
+                Jump();
+            }
         }
     }
 
@@ -101,6 +127,7 @@ public class player : MonoBehaviour {
 
     void Jump()
     {
+        //Jump only if grounded
         if (ground)
         {
             Jump_Sound(GetComponent<AudioSource>(), "jump");
@@ -110,6 +137,7 @@ public class player : MonoBehaviour {
 
     void Movement()
     {
+        // Add Movement Force to radiant Direction
         movement = right.transform.position * direction * speed * Time.deltaTime;
         rigid.AddForce(movement);
     }
@@ -124,6 +152,16 @@ public class player : MonoBehaviour {
         //LOOSE
 
 
+
+    }
+
+    void PauseGame()
+    {
+
+    }
+
+    void UnPauseGame()
+    {
 
     }
 

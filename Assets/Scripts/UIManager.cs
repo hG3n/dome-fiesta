@@ -66,11 +66,13 @@ public class UIManager : MonoBehaviour {
     private void OnEnable()
     {
         GameManager.FinishGame += GameEnd;
+
     }
 
     private void OnDisable()
     {
         GameManager.FinishGame -= GameEnd;
+
     }
 
 
@@ -80,6 +82,7 @@ public class UIManager : MonoBehaviour {
         if (value)
         {
             Debug.Log("Game Ends");
+            play = false;
         }
     }
     
@@ -431,6 +434,7 @@ public class UIManager : MonoBehaviour {
 
     public void StartGame()
     {
+        play = true;
         for (int i = 0; i < WinText.Count; ++i)
         {
             WinText[i].gameObject.SetActive(false);
@@ -623,6 +627,7 @@ public class UIManager : MonoBehaviour {
             }
         }
     }
+
     public void SetCoundown(int playercount,int value)
     {
         if (value == -1)

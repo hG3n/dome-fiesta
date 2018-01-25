@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour {
         Countdown();
         InitializePlayer();
         Startgame(true);
-        NextRound();
+        SpawnBall();
 
         
     }
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour {
         CheckScore();
         if (UIManager.GetComponent<UIManager>().play)
         {
-            NextRound();
+            SpawnBall();
         }
 
     }
@@ -168,6 +168,7 @@ public class GameManager : MonoBehaviour {
             if (Teamscore[i] >= win_score)
             {
                 Debug.Log("Team " + (i+1).ToString() + " Wins");
+                UIManager.GetComponent<UIManager>().play = false;
                 WinRound(i);
             }
         }
@@ -249,6 +250,12 @@ public class GameManager : MonoBehaviour {
             BallList.Add(ball);
         }
         
+    }
+
+    void SpawnBall()
+    {
+        Debug.Log("Spawn Ball");
+        Instantiate(BallSkin[0], transform.position, transform.rotation);
     }
 
     public void DestroyBall(GameObject ball)

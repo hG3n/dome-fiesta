@@ -47,10 +47,15 @@ public class PlayerSelection : MonoBehaviour {
         {
             SetController();
         }
+        else
+        {
+
+        }
     }
 
     public void SetController()
     {
+        // Set Controller to Player
         if (Input.GetKeyDown("joystick 1 button 0"))
         {
             if (CheckControl("con1"))
@@ -95,6 +100,7 @@ public class PlayerSelection : MonoBehaviour {
 
     public bool CheckControl(string source)
     {
+        //Check if Input Source is in Control Manager
         List<string> list = ControlManager.GetComponent<ControlManager>().Controls;
         for (int i = 0; i < list.Count; ++i)
         {
