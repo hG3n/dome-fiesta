@@ -1,0 +1,206 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using extOSC;
+public class OSCManager : MonoBehaviour
+{
+
+    public GameObject GameManager;
+    public GameObject UIManager;
+    public bool allready = false;
+
+
+    private OSCReceiver _receiver;
+    private OSCTransmitter _transmitter;
+
+    public bool sendadmin;
+
+    //Receive
+    private const string _osc_network_data = "/server/networkdata/";
+    private const string _osc_gamemode = "/server/gamemode/";
+    private const string _osc_replay = "/server/replay/";
+    private const string _osc_server_start = "/server/start/";
+
+    //Send
+    private const string _osc_network_clients = "/server/networkclients/";
+    private const string _osc_connect = "/client/connection/";
+    private const string _osc_admin = "/client/admin/";
+    private const string _osc_start = "/client/start/";
+    private const string _osc_end = "/client/end/";
+    private const string _osc_score = "/client/score/";
+
+    public List<GameObject> ConnectionList;
+
+
+
+
+
+    // Use this for initialization
+    void Start()
+    {
+        _transmitter = gameObject.AddComponent<OSCTransmitter>();
+        _transmitter.RemotePort = 6969;
+
+        _receiver = gameObject.AddComponent<OSCReceiver>();
+        _receiver.LocalPort = 7000;
+
+        _receiver.Bind(_osc_network_data, ReceiveClient);
+        _receiver.Bind(_osc_gamemode, ReceiveMode);
+        _receiver.Bind(_osc_start, ReceiveStart);
+        _receiver.Bind(_osc_server_start, ReceiveServerStart);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (sendadmin)
+        {
+            SendAdmin();
+            sendadmin = false;
+        }
+    }
+
+    void ReceiveMode(OSCMessage message)
+    {
+        Debug.Log("Change Game Mode: " + message);
+        GameManager.GetComponent<GameManager>().gamemode = message.Values[0].IntValue;
+        GameManager.GetComponent<GameManager>().ballmode = message.Values[1].IntValue;
+        GameManager.GetComponent<GameManager>().win_score = message.Values[2].IntValue;
+        GameManager.GetComponent<GameManager>().ballskin = message.Values[3].IntValue;
+    }
+
+    void ReceiveClient(OSCMessage message)
+    {
+        Debug.Log("Receive Client: " + message);
+        bool found = false;
+        int clientID = 0;
+        string clientip = message.Values[1].StringValue;
+        if (ConnectionList.Count != 0)
+        {
+            for (int i = 0; i < ConnectionList.Count; ++i)
+            {
+                if (clientip == ConnectionList[i].GetComponent<Client>().localip)
+                {
+                    found = true;
+                    clientID = i;
+                }
+            }
+        }
+
+        if (!found)
+        {
+
+            GameObject newclient = new GameObject("Client");
+            newclient.AddComponent<Client>();
+            newclient.GetComponent<Client>().name = message.Values[0].StringValue;
+            newclient.GetComponent<Client>().localip = message.Values[1].StringValue;
+            newclient.GetComponent<Client>().modelID = message.Values[2].IntValue;
+            newclient.GetComponent<Client>().teamID = message.Values[3].IntValue;
+            newclient.GetComponent<Client>().ready = message.Values[4].BoolValue;
+            if (ConnectionList.Count == 0)
+            {
+                newclient.GetComponent<Client>().admin = true;
+            }
+            ConnectionList.Add(newclient);
+
+            //Sending Admin Rights to Client
+            SendAdmin();
+
+        }
+        else
+        {
+            ConnectionList[clientID].GetComponent<Client>().localip = message.Values[0].StringValue;
+            ConnectionList[clientID].GetComponent<Client>().name = message.Values[1].StringValue;
+            ConnectionList[clientID].GetComponent<Client>().modelID = message.Values[2].IntValue;
+            ConnectionList[clientID].GetComponent<Client>().teamID = message.Values[3].IntValue;
+            ConnectionList[clientID].GetComponent<Client>().ready = message.Values[4].BoolValue;
+        }
+    }
+
+    void ReceiveStart(OSCMessage message)
+    {
+
+    }
+
+    void ReceiveServerStart(OSCMessage message)
+    {
+        if (allready)
+        {
+
+        }
+    }
+
+    void ReceiveReplay(OSCMessage message)
+    {
+
+    }
+
+    public void SendAdmin()
+    {
+        for (int i = 0; i < ConnectionList.Count; ++i)
+        {
+            if (ConnectionList[i].GetComponent<Client>().admin)
+            {
+                string ip = ConnectionList[i].GetComponent<Client>().localip;
+                _transmitter.RemoteHost = ip;
+
+                OSCMessage message = new OSCMessage(_osc_admin);
+                message.AddValue(OSCValue.Bool(true));
+                _transmitter.Send(message);
+            }
+        }
+    }
+
+    public void SendUpdateScore()
+    {
+
+    }
+
+    public void SendClients(string ip)
+    {
+        OSCMessage message = new OSCMessage(_osc_network_clients);
+        for (int i =0;i<ConnectionList.Count;++i)
+        {
+            Client client = ConnectionList[i].GetComponent<Client>();
+            message.AddValue(OSCValue.String(client.localip));
+            message.AddValue(OSCValue.String(client.name));
+            message.AddValue(OSCValue.Int(client.modelID));
+            message.AddValue(OSCValue.Int(client.teamID));
+            message.AddValue(OSCValue.Bool(client.ready));
+
+        }
+        _transmitter.RemoteHost = ip;
+        _transmitter.Send(message);
+    }
+
+    public void SendStartGame()
+    {
+        OSCMessage message = new OSCMessage(_osc_start);
+        _transmitter.Send(message);
+    }
+
+    public void SendEndGame(int teamid)
+    {
+        OSCMessage message = new OSCMessage(_osc_start);
+        for (int i = 0; i < GameManager.GetComponent<GameManager>().Teamscore.Count; ++i)
+        {
+            message.AddValue(OSCValue.Int(GameManager.GetComponent<GameManager>().Teamscore[i]));
+        }
+        _transmitter.Send(message);
+    }
+
+    public bool CheckReady()
+    {
+        bool ready = true;
+        for (int i = 0; i < ConnectionList.Count;++i)
+        {
+            if (!ConnectionList[i].GetComponent<Client>().ready)
+            {
+                ready = false;
+            }
+        }
+        return ready;
+    }
+
+
+}

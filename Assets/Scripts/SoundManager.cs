@@ -20,20 +20,12 @@ public class SoundManager : MonoBehaviour {
     {
         Ball.Score_Sound += PlaySound;
         player.Jump_Sound += PlaySound;
-        UIManager.UI_Sound += PlaySound;
-        UIManager.UI_Music += PlayMusic;
-        UIManager.UI_Sound_Setting += SetSound;
-        UIManager.UI_Music_Setting += SetMusic;
     }
 
     private void OnDisable()
     {
         Ball.Score_Sound -= PlaySound;
         player.Jump_Sound -= PlaySound;
-        UIManager.UI_Sound -= PlaySound;
-        UIManager.UI_Music -= PlayMusic;
-        UIManager.UI_Sound_Setting -= SetSound;
-        UIManager.UI_Music_Setting -= SetMusic;
     }
 
     // Use this for initialization

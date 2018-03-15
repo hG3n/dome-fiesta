@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameField : MonoBehaviour {
 
-    public int team_area;
+    public int teamID;
     public delegate void FieldEvent(int team_area);
     public static event FieldEvent Score;
 
@@ -13,7 +13,7 @@ public class GameField : MonoBehaviour {
         if (other.tag == "Ball")
         {
             other.gameObject.GetComponent<Ball>().Death();
-            Score(team_area);          
+            Score(other.gameObject.GetComponent<Ball>().teamid);          
         }
     }
 }

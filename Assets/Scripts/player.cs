@@ -1,15 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using extOSC;
+public class player : MonoBehaviour
+{
 
-public class player : MonoBehaviour {
-
-    public delegate void Sound_Event(AudioSource source,string value);
+    public delegate void Sound_Event(AudioSource source, string value);
     public static event Sound_Event Jump_Sound;
 
     public GameObject area;
     public GameObject left;
     public GameObject right;
+
+    public string controller_ip;
+    public int teamID;
+    public OSCReceiver _receiver;
+
+    private const string _osc_control = "/control/controller/";
+    private const string _osc_jump = "/control/jump/";
+
     public string name;
     public float speed;
     public float jump;
@@ -20,12 +29,37 @@ public class player : MonoBehaviour {
     public float maxspeed;
     public string Controller;
     public bool play;
-    
+
     // Use this for initialization
-	void Start ()
+    void Start()
     {
         rigid = GetComponent<Rigidbody>();
-	}
+        _receiver = new OSCReceiver();
+        _receiver.LocalPort = 6969;
+        _receiver.Bind(_osc_control, ReceiveMovement);
+        _receiver.Bind(_osc_jump, ReceiveJump);
+    }
+
+    //Network Data
+    void ReceiveMovement(OSCMessage message)
+    {
+        if (controller_ip == message.Values[0].StringValue)
+        {
+            Debug.Log("Received Control Value from: " +message);
+            direction = message.Values[1].FloatValue;
+        }
+    }
+
+    void ReceiveJump(OSCMessage message)
+    {
+        if (controller_ip == message.Values[0].StringValue)
+        {
+            Debug.Log("Received Jump from: " + message);
+            Jump();
+        }
+    }
+
+
 
     void Update()
     {
@@ -39,10 +73,12 @@ public class player : MonoBehaviour {
     private void OnEnable()
     {
         GameManager.Startgame += Gamestart;
+        GameManager.death += Death;
     }
     private void OnDisable()
     {
         GameManager.Startgame -= Gamestart;
+        GameManager.death -= Death;
     }
 
     public void Gamestart(bool start)
@@ -111,19 +147,19 @@ public class player : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void FixedUpdate ()
+    void FixedUpdate()
+    {
+        //Move only if game is started
+        if (play)
         {
-            //Move only if game is started
-            if (play)
-            {
-                Movement();
-            }
-            transform.LookAt(area.transform.position);
-            if (rigid.velocity.magnitude > maxspeed)
-            {
-                rigid.velocity =Vector3.ClampMagnitude(rigid.velocity,maxspeed);
-            }
-	    }
+            Movement();
+        }
+        transform.LookAt(area.transform.position);
+        if (rigid.velocity.magnitude > maxspeed)
+        {
+            rigid.velocity = Vector3.ClampMagnitude(rigid.velocity, maxspeed);
+        }
+    }
 
     void Jump()
     {
@@ -175,5 +211,10 @@ public class player : MonoBehaviour {
         if (other.tag == "platform")
         { ground = false; }
 
+    }
+
+    public void Death()
+    {
+        Destroy(this.gameObject.transform.parent.gameObject);
     }
 }

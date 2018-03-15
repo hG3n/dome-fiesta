@@ -160,7 +160,6 @@ public class PlayerSelection : MonoBehaviour {
             ready_text.SetActive(true);
             player_text.color = Color.green;
             Ready(ready, Controller, select_skin);
-            UIManager.GetComponent<UIManager>().Next();
             Destroy(Skin);
             
         }
