@@ -5,19 +5,18 @@ using extOSC;
 public class GameManager : MonoBehaviour {
 
     //Team
-    public List<GameObject> Player;
-    public GameObject Field;
+    public List<GameObject> PlayerList;
     public List<GameObject> BallList;
+    public List<GameObject> GameFieldList;
+    public List<GameObject> PlayerSkinList;
+    public List<GameObject> BallSkinList;
 
-    public List<GameObject> PlayerSkins;
-    public List<GameObject> BallSkin;
-    public List<GameObject> World;
-    public List<GameObject> GameFields;
+    public List<GameObject> WorldList;
+
     public List<string> GameMode;
     //  Normal
     //  Fury
     //  Insane
-    public List<string> TeamSetting;
 
     public List<int> Teamscore;
     //Team 1 
@@ -28,23 +27,29 @@ public class GameManager : MonoBehaviour {
     public List<Transform> Spawns;
 
     //Settings
-    public int fieldblocks;
+    public int fieldblockskin;
     public int playercount;
 
     public int gamemode = 0;
     public int ballmode = 0;
+    // small
+    // normal
+    // large
+    // random
     public int ballskin = 0;
-    // Team Composition
     public int teamcomp = 0;
     // 1v1
     // 2v2
     // 3ffa
     // 4 ffa
     public int win_score = 10;
-    public int world_select;
+    public int world_select = 0;
     public int max_ball_count = 1;
 
+    public bool play = false;
+
     public OSCManager oscmanager;
+    public FieldManager fieldmanager;
 
     public GameObject UIManager;
     public delegate void GameManagerEvent(int id);
@@ -79,6 +84,7 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
+    //Ready
     public void GameStart()
     {
         //2 TEAMS
@@ -91,49 +97,52 @@ public class GameManager : MonoBehaviour {
         InitializePlayer();
         oscmanager.GetComponent<OSCManager>().SendStartGame();
         Startgame(true);
-        SpawnBall();
-
-        
+        play = true;
+        if (gamemode == 0)
+        {
+            max_ball_count = 1;
+            SpawnBall();
+        }
+        else if (gamemode == 1)
+        {
+            max_ball_count = 3;
+            SpawnBall();
+            SpawnBall();
+        }
+        else if (gamemode == 2)
+        {
+            max_ball_count = 5;
+            SpawnBall();
+            SpawnBall();
+            SpawnBall();
+        }
+              
     }
 
+    //Ready
     void InitializeArea()
     {
-        Debug.Log("Initialze Area");
-        if (teamcomp == 0)
-        {
-            Field = Instantiate(GameFields[0]) as GameObject;
-        }
-        else if (teamcomp == 1)
-        {
-            Field = Instantiate(GameFields[0]) as GameObject;
-        }
-        else if (teamcomp == 2)
-        {
-            Field = Instantiate(GameFields[1]) as GameObject;
-        }
-        else if (teamcomp == 3)
-        {
-            Field = Instantiate(GameFields[2] as GameObject);
-        }
+        fieldmanager.CreateGameField();
     }
 
+    //Ready
     void InitializePlayer()
     {
         Debug.Log("Initialize Player");
         if (teamcomp == 0)
         {
             // Team Composition 1 v 1
-            List<Transform> spawn = GameFields[0].GetComponent<Field>().PlayerSpawn;
+            List<Transform> spawn = GameFieldList[0].GetComponent<Field>().PlayerSpawn;
 
             for (int i = 0; i<oscmanager.GetComponent<OSCManager>().ConnectionList.Count;++i)
             {
                 int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
                 int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
                 string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkins[modelID], spawn[teamID]) as GameObject;
+                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
                 temp_player.GetComponent<player>().teamID = teamID;
                 temp_player.GetComponent<player>().controller_ip = localip;
-                Player.Add(temp_player);
+                PlayerList.Add(temp_player);
             }
         }
         else if (teamcomp == 1)
@@ -141,7 +150,7 @@ public class GameManager : MonoBehaviour {
             // Team Composition 2 v 2
             bool firstspawn_team1 = false;
             bool firstspawn_team2 = false;
-            List<Transform> spawn = GameFields[0].GetComponent<Field>().PlayerSpawn;
+            List<Transform> spawn = GameFieldList[0].GetComponent<Field>().PlayerSpawn;
 
             for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
             {
@@ -153,11 +162,11 @@ public class GameManager : MonoBehaviour {
                 {
                     if (firstspawn_team1)
                     {
-                        temp_player = Instantiate(PlayerSkins[modelID], spawn[1]) as GameObject;
+                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[1]) as GameObject;
                     }
                     else
                     {
-                        temp_player = Instantiate(PlayerSkins[modelID], spawn[0]) as GameObject;
+                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[0]) as GameObject;
                         firstspawn_team1 = true;
                     }
                 }
@@ -165,70 +174,72 @@ public class GameManager : MonoBehaviour {
                 {
                     if (firstspawn_team2)
                     {
-                        temp_player = Instantiate(PlayerSkins[modelID], spawn[3]) as GameObject;
+                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[3]) as GameObject;
                     }
                     else
                     {
-                        temp_player = Instantiate(PlayerSkins[modelID], spawn[2]) as GameObject;
+                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[2]) as GameObject;
                         firstspawn_team1 = true;
                     }
                 }
 
                 temp_player.GetComponent<player>().teamID = teamID;
                 temp_player.GetComponent<player>().controller_ip = localip;
-                Player.Add(temp_player);
+                PlayerList.Add(temp_player);
             }
         }
         else if (teamcomp == 2)
         {
             // Team Composition 3 free for all
-            List<Transform> spawn = GameFields[1].GetComponent<Field>().PlayerSpawn;
+            List<Transform> spawn = GameFieldList[1].GetComponent<Field>().PlayerSpawn;
 
             for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
             {
                 int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
                 int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
                 string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkins[modelID], spawn[teamID]) as GameObject;
+                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
                 temp_player.GetComponent<player>().teamID = teamID;
                 temp_player.GetComponent<player>().controller_ip = localip;
-                Player.Add(temp_player);
+                PlayerList.Add(temp_player);
             }
         }
         else if (teamcomp == 3)
         {
             // Team Composition 4 free for all
-            List<Transform> spawn = GameFields[2].GetComponent<Field>().PlayerSpawn;
+            List<Transform> spawn = GameFieldList[2].GetComponent<Field>().PlayerSpawn;
 
             for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
             {
                 int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
                 int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
                 string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkins[modelID], spawn[teamID]) as GameObject;
+                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
                 temp_player.GetComponent<player>().teamID = teamID;
                 temp_player.GetComponent<player>().controller_ip = localip;
-                Player.Add(temp_player);
+                PlayerList.Add(temp_player);
             }
         }
 
     }
 
+    //Ready
     void InitializeWorld()
     {
-        for (int i = 0; i<World.Count;++i)
+        for (int i = 0; i<WorldList.Count;++i)
         {
             if (i == world_select)
             {
-                World[i].SetActive(true);
+                WorldList[i].SetActive(true);
             }
             else
             {
-                World[i].SetActive(false);
+                WorldList[i].SetActive(false);
             }
         }
     }
 
+    //Ready
     void Score_Ball(int team)
     {
         Debug.Log("Ball Scored");
@@ -238,37 +249,28 @@ public class GameManager : MonoBehaviour {
         SpawnBall();
     }
 
+    //Ready
     public void ClearSetting()
     {
         Debug.Log("Clear Settings");
-        Player.Clear();
+        PlayerList.Clear();
         BallList.Clear();
+        fieldmanager.ClearGameField();
         death();
         for (int i =0; i<Teamscore.Count;++i)
         {
             Teamscore[i] = 0;
         }
-        Destroy(Field);
-        fieldblocks = 0;
-        playercount = 0;
-        gamemode = 0;
-        teamcomp = 0;
-        world_select = 0;
-        max_ball_count = 1;
-        win_score = 10;
     }
 
     public void Rematch()
     {
-        for (int i = 0; i < Teamscore.Count; ++i)
-        {
-            Teamscore[i] = 0;
-        }
-        BallList.Clear();
-        Startgame(true);
+        ClearSetting();
+        GameStart();
         oscmanager.GetComponent<OSCManager>().SendStartGame();
     }
 
+    //Ready
     void CheckScore()
     {
         for (int i = 0; i < Teamscore.Count; ++i)
@@ -281,9 +283,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    //Ready
     void WinRound(int value)
     {
         Startgame(false);
+        play = false;
         FinishGame(true);
         oscmanager.GetComponent<OSCManager>().SendEndGame(value);
     }
@@ -293,18 +297,54 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Spawn Ball");
         if (max_ball_count>BallList.Count)
         {
-            GameObject ball = Instantiate(BallSkin[0], transform.position, transform.rotation) as GameObject;
+            GameObject ball = Instantiate(BallSkinList[0], transform.position, transform.rotation) as GameObject;
             BallList.Add(ball);
         }
         
     }
 
+    //Ready
     void SpawnBall()
-    {
-        Debug.Log("Spawn Ball");
-        Instantiate(BallSkin[0], transform.position, transform.rotation);
+    {        
+        if (BallList.Count <= max_ball_count && play)
+        {
+            Debug.Log("Spawn Ball");
+            GameObject temp_Ball = Instantiate(BallSkinList[ballskin], transform.position, transform.rotation) as GameObject;
+            //Changing Ball Size
+            if (ballmode == 0)
+            {
+                temp_Ball.GetComponent<Ball>().ChangeSize(0.75f);
+            }
+            else if (ballmode == 1)
+            {
+                temp_Ball.GetComponent<Ball>().ChangeSize(1.0f);
+            }
+            else if (ballmode == 2)
+            {
+                temp_Ball.GetComponent<Ball>().ChangeSize(1.25f);
+            }
+            if (ballmode == 4)
+            {
+                //Choose random Size
+                int random = UnityEngine.Random.RandomRange(0,3);
+                if (random==0)
+                {
+                    temp_Ball.GetComponent<Ball>().ChangeSize(0.75f);
+                }
+                else if (random == 1)
+                {
+                    temp_Ball.GetComponent<Ball>().ChangeSize(1.0f);
+                }
+                else if (random == 2)
+                {
+                    temp_Ball.GetComponent<Ball>().ChangeSize(1.25f);
+                }
+            }
+            BallList.Add(temp_Ball);
+        }
     }
 
+    //Ready
     public void DestroyBall(GameObject ball)
     {
         BallList.Remove(ball);

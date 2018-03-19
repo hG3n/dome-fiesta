@@ -18,6 +18,8 @@ public class Ball : MonoBehaviour {
     public Vector3 velocity;
     public float force;
     public float bounce_force;
+    public Vector3 origin_size;
+    public float size = 1.0f;
 
 
 
@@ -27,12 +29,18 @@ public class Ball : MonoBehaviour {
     void Start ()
     {
         rigid = GetComponent<Rigidbody>();
-
+        origin_size = transform.localScale;
         float x= UnityEngine.Random.RandomRange(0,10);
         float z = UnityEngine.Random.RandomRange(0,10); ;
         Vector3 dir = new Vector3(x,0,z);
         rigid.AddForce(dir,ForceMode.Impulse);
 	}
+
+    public void ChangeSize(float value)
+    {
+        size = value;
+        transform.localScale = origin_size * size;
+    }
 
     void FixedUpdate()
     { 
