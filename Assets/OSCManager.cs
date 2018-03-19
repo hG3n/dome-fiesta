@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Net;
+using System.Net.Sockets;
 using extOSC;
 public class OSCManager : MonoBehaviour
 {
 
     public GameManager GameManager;
     public UIManager UIManager;
+    public string localip;
     public int client_limit = 4;
     public bool all_ready = false;
 
@@ -49,6 +52,8 @@ public class OSCManager : MonoBehaviour
         _receiver.Bind(_osc_gamemode, ReceiveMode);
         _receiver.Bind(_osc_server_start, ReceiveServerStart);
         _receiver.Bind(_osc_replay, ReceiveReplay);
+        localip = GetLocalIPAddress();
+        UIManager.UpdateAdress(localip);
     }
 
     // Update is called once per frame
@@ -198,6 +203,25 @@ public class OSCManager : MonoBehaviour
             _transmitter.Send(message);
         }
 
+    }
+
+    //Ready
+    public string GetLocalIPAddress()
+    {
+        Debug.Log("Get Local IP Adress...");
+
+        IPHostEntry host;
+        string localIP = "";
+        host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (IPAddress ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                localIP = ip.ToString();
+                break;
+            }
+        }
+        return localIP;
     }
 
     //Ready
