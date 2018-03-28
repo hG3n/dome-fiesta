@@ -74,6 +74,7 @@ public class OSCManager : MonoBehaviour
         GameManager.GetComponent<GameManager>().ballmode = message.Values[1].IntValue;
         GameManager.GetComponent<GameManager>().win_score = message.Values[2].IntValue;
         GameManager.GetComponent<GameManager>().ballskin = message.Values[3].IntValue;
+        SendClients();
     }
 
     //Ready
@@ -126,16 +127,40 @@ public class OSCManager : MonoBehaviour
             ConnectionList[clientID].GetComponent<Client>().ready = message.Values[4].BoolValue;
             CheckReady();
         }
+        SendClients();
+        CheckReady();
     }
 
     //Ready
     void ReceiveServerStart(OSCMessage message)
     {
+        Debug.Log(message);
         CheckReady();
         if (all_ready)
         {
-            GameManager.GameStart();
+            if (ConnectionList.Count == 1)
+            {
+                GameObject temp_client = Instantiate(ConnectionList[0]) as GameObject;
+                temp_client.GetComponent<Client>().teamID = 1;
+                temp_client.GetComponent<Client>().modelID = 0;
+                temp_client.GetComponent<Client>().name = "testbot";
+                temp_client.GetComponent<Client>().ready = true;
+
+                Debug.Log("Client Team ID" + temp_client.GetComponent<Client>().teamID);
+                Debug.Log("Client Model ID" + temp_client.GetComponent<Client>().modelID);
+                Debug.Log("Client Name " + temp_client.GetComponent<Client>().name);
+                Debug.Log("Client Ready " + temp_client.GetComponent<Client>().ready);
+                ConnectionList.Add(temp_client);
+                
+                GameManager.GameStart();
+            }
+            else
+            {
+                GameManager.GameStart();
+            }
+            
         }
+        SendClients();
     }
 
     //Ready
@@ -146,6 +171,7 @@ public class OSCManager : MonoBehaviour
         {
             GameManager.Rematch();
         }
+        SendClients();
     }
 
     //Ready
@@ -183,7 +209,7 @@ public class OSCManager : MonoBehaviour
     }
 
     //Ready
-    public void SendClients(string ip)
+    public void SendClients()
     {
         OSCMessage message = new OSCMessage(_osc_network_clients);
         for (int i =0;i<ConnectionList.Count;++i)
@@ -199,7 +225,8 @@ public class OSCManager : MonoBehaviour
 
         for (int i = 0; i < ConnectionList.Count; ++i)
         {
-            _transmitter.RemoteHost = ip;
+            Client client = ConnectionList[i].GetComponent<Client>();
+            _transmitter.RemoteHost = client.localip;
             _transmitter.Send(message);
         }
 
@@ -236,7 +263,7 @@ public class OSCManager : MonoBehaviour
 
     }
 
-    //Ready
+    //Ready 
     public void SendEndGame(int teamid)
     {
         OSCMessage message = new OSCMessage(_osc_end);
@@ -249,8 +276,9 @@ public class OSCManager : MonoBehaviour
     }
 
     //Ready
-    public bool CheckReady()
+    public void CheckReady()
     {
+        Debug.Log("Check Ready");
         bool ready = true;
         for (int i = 0; i < ConnectionList.Count;++i)
         {
@@ -259,7 +287,8 @@ public class OSCManager : MonoBehaviour
                 ready = false;
             }
         }
-        return ready;
+        Debug.Log("All Ready: " + ready);
+        all_ready =  ready;
     }
 
 

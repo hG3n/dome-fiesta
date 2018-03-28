@@ -69,13 +69,13 @@ public class GameManager : MonoBehaviour {
 
     private void OnEnable()
     {
-        GameField.Score +=Score_Ball;
+        Ball.Score +=Score_Ball;
         Ball.deathball += DestroyBall;
     }
 
     private void OnDisable()
     {
-        GameField.Score -= Score_Ball;
+        Ball.Score -= Score_Ball;
         Ball.deathball += DestroyBall;
     }
 
@@ -125,101 +125,24 @@ public class GameManager : MonoBehaviour {
         fieldmanager.CreateGameField();
     }
 
-    //Ready
+    //
     void InitializePlayer()
     {
         Debug.Log("Initialize Player");
-        if (teamcomp == 0)
+        // Team Composition 1 v 1
+        List<Transform> spawn = fieldmanager.GetComponent<FieldManager>().PlayerSpawn;
+
+        for (int i = 0; i<oscmanager.GetComponent<OSCManager>().ConnectionList.Count;++i)
         {
-            // Team Composition 1 v 1
-            List<Transform> spawn = GameFieldList[0].GetComponent<Field>().PlayerSpawn;
-
-            for (int i = 0; i<oscmanager.GetComponent<OSCManager>().ConnectionList.Count;++i)
-            {
-                int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
-                int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
-                string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
-                temp_player.GetComponent<player>().teamID = teamID;
-                temp_player.GetComponent<player>().controller_ip = localip;
-                PlayerList.Add(temp_player);
-            }
+            int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
+            int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
+            string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
+            GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[i]) as GameObject;
+            temp_player.transform.GetChild(0).gameObject.GetComponent<player>().teamID = teamID;
+            temp_player.transform.GetChild(0).gameObject.GetComponent<player>().controller_ip = localip;
+            PlayerList.Add(temp_player);
         }
-        else if (teamcomp == 1)
-        {
-            // Team Composition 2 v 2
-            bool firstspawn_team1 = false;
-            bool firstspawn_team2 = false;
-            List<Transform> spawn = GameFieldList[0].GetComponent<Field>().PlayerSpawn;
-
-            for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
-            {
-                int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
-                int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
-                string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player;
-                if (teamID == 0)
-                {
-                    if (firstspawn_team1)
-                    {
-                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[1]) as GameObject;
-                    }
-                    else
-                    {
-                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[0]) as GameObject;
-                        firstspawn_team1 = true;
-                    }
-                }
-                else
-                {
-                    if (firstspawn_team2)
-                    {
-                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[3]) as GameObject;
-                    }
-                    else
-                    {
-                        temp_player = Instantiate(PlayerSkinList[modelID], spawn[2]) as GameObject;
-                        firstspawn_team1 = true;
-                    }
-                }
-
-                temp_player.GetComponent<player>().teamID = teamID;
-                temp_player.GetComponent<player>().controller_ip = localip;
-                PlayerList.Add(temp_player);
-            }
-        }
-        else if (teamcomp == 2)
-        {
-            // Team Composition 3 free for all
-            List<Transform> spawn = GameFieldList[1].GetComponent<Field>().PlayerSpawn;
-
-            for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
-            {
-                int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
-                int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
-                string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
-                temp_player.GetComponent<player>().teamID = teamID;
-                temp_player.GetComponent<player>().controller_ip = localip;
-                PlayerList.Add(temp_player);
-            }
-        }
-        else if (teamcomp == 3)
-        {
-            // Team Composition 4 free for all
-            List<Transform> spawn = GameFieldList[2].GetComponent<Field>().PlayerSpawn;
-
-            for (int i = 0; i < oscmanager.GetComponent<OSCManager>().ConnectionList.Count; ++i)
-            {
-                int modelID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().modelID;
-                int teamID = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().teamID;
-                string localip = oscmanager.GetComponent<OSCManager>().ConnectionList[i].GetComponent<Client>().localip;
-                GameObject temp_player = Instantiate(PlayerSkinList[modelID], spawn[teamID]) as GameObject;
-                temp_player.GetComponent<player>().teamID = teamID;
-                temp_player.GetComponent<player>().controller_ip = localip;
-                PlayerList.Add(temp_player);
-            }
-        }
+       
 
     }
 
@@ -313,15 +236,15 @@ public class GameManager : MonoBehaviour {
             //Changing Ball Size
             if (ballmode == 0)
             {
-                temp_Ball.GetComponent<Ball>().ChangeSize(0.75f);
+                temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(0.75f);
             }
             else if (ballmode == 1)
             {
-                temp_Ball.GetComponent<Ball>().ChangeSize(1.0f);
+                temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(1.0f);
             }
             else if (ballmode == 2)
             {
-                temp_Ball.GetComponent<Ball>().ChangeSize(1.25f);
+                temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(1.25f);
             }
             if (ballmode == 4)
             {
@@ -329,15 +252,15 @@ public class GameManager : MonoBehaviour {
                 int random = UnityEngine.Random.RandomRange(0,3);
                 if (random==0)
                 {
-                    temp_Ball.GetComponent<Ball>().ChangeSize(0.75f);
+                    temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(0.75f);
                 }
                 else if (random == 1)
                 {
-                    temp_Ball.GetComponent<Ball>().ChangeSize(1.0f);
+                    temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(1.0f);
                 }
                 else if (random == 2)
                 {
-                    temp_Ball.GetComponent<Ball>().ChangeSize(1.25f);
+                    temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(1.25f);
                 }
             }
             BallList.Add(temp_Ball);

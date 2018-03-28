@@ -34,8 +34,8 @@ public class player : MonoBehaviour
     void Start()
     {
         rigid = GetComponent<Rigidbody>();
-        _receiver = new OSCReceiver();
-        _receiver.LocalPort = 6969;
+        _receiver = gameObject.AddComponent<OSCReceiver>();
+        _receiver.LocalPort = 7000;
         _receiver.Bind(_osc_control, ReceiveMovement);
         _receiver.Bind(_osc_jump, ReceiveJump);
     }
@@ -43,18 +43,20 @@ public class player : MonoBehaviour
     //Network Data
     void ReceiveMovement(OSCMessage message)
     {
+        Debug.Log("Received Control Value from: " + message);
         if (controller_ip == message.Values[0].StringValue)
         {
-            Debug.Log("Received Control Value from: " +message);
+            
             direction = message.Values[1].FloatValue;
         }
     }
 
     void ReceiveJump(OSCMessage message)
     {
+        Debug.Log("Received Jump from: " + message);
         if (controller_ip == message.Values[0].StringValue)
         {
-            Debug.Log("Received Jump from: " + message);
+            
             Jump();
         }
     }

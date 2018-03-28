@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Field : MonoBehaviour {
 
-    public List<Transform> PlayerSpawn;
+    int team_id=0;
 
 	// Use this for initialization
 	void Start () {

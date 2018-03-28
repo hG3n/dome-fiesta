@@ -7,6 +7,9 @@ public class Ball : MonoBehaviour {
     public delegate void BallEvent(GameObject ball);
     public static event BallEvent deathball;
 
+    public delegate void FieldEvent(int team_area);
+    public static event FieldEvent Score;
+
     public delegate void Sound_Event(AudioSource source, string value);
     public static event Sound_Event Score_Sound;
 
@@ -49,21 +52,9 @@ public class Ball : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Team1")
+        if (other.tag == "Field")
         {
-            airID = 1;
-        }
-        else if (other.tag == "Team2")
-        {
-            airID = 2;
-        }
-        else if (other.tag == "Team3")
-        {
-            airID = 2;
-        }
-        else if (other.tag == "Team4")
-        {
-            airID = 2;
+            airID = other.GetComponent<GameField>().teamID;
         }
         if (other.tag == "bounce")
         {
@@ -82,7 +73,8 @@ public class Ball : MonoBehaviour {
         }
         if (other.tag == "Death")
         {
-            //Death();
+            Death();
+            Score(teamid);
         }
 
     }
