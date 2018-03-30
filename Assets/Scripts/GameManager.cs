@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour {
     public int max_ball_count = 1;
 
     public bool play = false;
+    public bool spawn_ball = false;
 
     public OSCManager oscmanager;
     public FieldManager fieldmanager;
@@ -81,7 +82,11 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		
+        if (spawn_ball)
+        {
+            spawn_ball = false;
+            SpawnBall();
+        }
 	}
 
     //Ready
@@ -100,7 +105,7 @@ public class GameManager : MonoBehaviour {
         play = true;
         if (gamemode == 0)
         {
-            max_ball_count = 1;
+            max_ball_count = 2;
             SpawnBall();
         }
         else if (gamemode == 1)
@@ -141,6 +146,7 @@ public class GameManager : MonoBehaviour {
             temp_player.transform.GetChild(0).gameObject.GetComponent<player>().teamID = teamID;
             temp_player.transform.GetChild(0).gameObject.GetComponent<player>().controller_ip = localip;
             PlayerList.Add(temp_player);
+            Teamscore.Add(0);
         }
        
 
@@ -166,7 +172,10 @@ public class GameManager : MonoBehaviour {
     void Score_Ball(int team)
     {
         Debug.Log("Ball Scored");
-        ++Teamscore[team];
+        if (team != -1)
+        {
+            ++Teamscore[team];
+        }
         CheckScore();
         oscmanager.GetComponent<OSCManager>().SendUpdateScore();
         SpawnBall();
@@ -232,9 +241,9 @@ public class GameManager : MonoBehaviour {
         if (BallList.Count <= max_ball_count && play)
         {
             Debug.Log("Spawn Ball");
-            GameObject temp_Ball = Instantiate(BallSkinList[ballskin], transform.position, transform.rotation) as GameObject;
+            GameObject temp_Ball = Instantiate(BallSkinList[ballskin], new Vector3(0,0,0), transform.rotation) as GameObject;
             //Changing Ball Size
-            if (ballmode == 0)
+            /*if (ballmode == 0)
             {
                 temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(0.75f);
             }
@@ -262,7 +271,7 @@ public class GameManager : MonoBehaviour {
                 {
                     temp_Ball.transform.GetChild(0).GetComponent<Ball>().ChangeSize(1.25f);
                 }
-            }
+            }*/
             BallList.Add(temp_Ball);
         }
     }

@@ -35,7 +35,7 @@ public class player : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>();
         _receiver = gameObject.AddComponent<OSCReceiver>();
-        _receiver.LocalPort = 7000;
+        _receiver.LocalPort = 6968;
         _receiver.Bind(_osc_control, ReceiveMovement);
         _receiver.Bind(_osc_jump, ReceiveJump);
     }

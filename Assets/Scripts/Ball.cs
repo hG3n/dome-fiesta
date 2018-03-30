@@ -63,7 +63,7 @@ public class Ball : MonoBehaviour {
         }
         if (other.tag == "Player")
         {
-            if (airID != other.GetComponent<player>().teamID)
+            if (airID == other.GetComponent<player>().teamID)
             {
                 teamid = other.GetComponent<player>().teamID;
             }           

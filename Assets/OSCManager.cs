@@ -204,6 +204,7 @@ public class OSCManager : MonoBehaviour
             {
                 message.AddValue(OSCValue.Int(GameManager.GetComponent<GameManager>().Teamscore[o]));
             }
+            Debug.Log("Sending Score Update");
             _transmitter.Send(message);
         }
     }
