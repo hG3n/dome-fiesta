@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour {
         InitializeArea();
         InitializePlayer();
         oscmanager.GetComponent<OSCManager>().SendStartGame();
+        UIManager.GetComponent<UIManager>().CountDown();
         Startgame(true);
         play = true;
         if (gamemode == 0)
@@ -221,6 +222,17 @@ public class GameManager : MonoBehaviour {
         Startgame(false);
         play = false;
         FinishGame(true);
+        for (int i = 0; i< PlayerList.Count; ++i)
+        {
+            if (oscmanager.ConnectionList[i].GetComponent<Client>().teamID == value)
+            {
+                PlayerList[i].GetComponent<player>().Animation("win");
+            }
+            else
+            {
+                PlayerList[i].GetComponent<player>().Animation("loose");
+            }
+        }
         oscmanager.GetComponent<OSCManager>().SendEndGame(value);
     }
 

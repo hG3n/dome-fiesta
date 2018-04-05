@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
     public GameObject Gamemanager;
     public GameObject HomeScreen;
     public List<Text> Adress;
+    public List<Text> Countdown;
 
     public GameObject Camera;
 
@@ -52,6 +53,30 @@ public class UIManager : MonoBehaviour {
     public void EndGame()
     {
         HomeScreen.active = true;
+    }
+
+    public IEnumerator CountDown()
+    {
+        for (int i=3; i>=0; --i)
+        {
+            yield return new WaitForSeconds(1.0f);
+            for (int o = 0; o < Countdown.Count;++o)
+            {
+                Countdown[o].text = o.ToString();
+            }
+            if (i == 0)
+            {
+                for (int o = 0; o < Countdown.Count; ++o)
+                {
+                    Countdown[o].text = "START";
+                }
+            }
+        }
+        yield return new WaitForSeconds(0.3f);
+        for (int o = 0; o < Countdown.Count; ++o)
+        {
+            Countdown[o].text = "";
+        }
     }
 
 }

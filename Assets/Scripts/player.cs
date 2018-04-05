@@ -7,6 +7,7 @@ public class player : MonoBehaviour
 
     public delegate void Sound_Event(AudioSource source, string value);
     public static event Sound_Event Jump_Sound;
+    public Animator animator;
 
     public GameObject area;
     public GameObject left;
@@ -61,8 +62,6 @@ public class player : MonoBehaviour
         }
     }
 
-
-
     void Update()
     {
         if (play)
@@ -75,17 +74,24 @@ public class player : MonoBehaviour
     private void OnEnable()
     {
         GameManager.Startgame += Gamestart;
+        GameManager.FinishGame += FinishGame;
         GameManager.death += Death;
     }
     private void OnDisable()
     {
         GameManager.Startgame -= Gamestart;
+        GameManager.FinishGame -= FinishGame;
         GameManager.death -= Death;
     }
 
     public void Gamestart(bool start)
     {
         play = start;
+    }
+
+    public void FinishGame(bool finish)
+    {
+        play = finish;
     }
 
     void HorizontalInput()
@@ -170,6 +176,7 @@ public class player : MonoBehaviour
         {
             Jump_Sound(GetComponent<AudioSource>(), "jump");
             rigid.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            Animation("jump");
         }
     }
 
@@ -177,10 +184,29 @@ public class player : MonoBehaviour
     {
         // Add Movement Force to radiant Direction
         movement = right.transform.position * direction * speed * Time.deltaTime;
+        //Turn Left
+        if (direction < 0)
+        {
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, left.transform.position, speed * Time.deltaTime, 0.0f);
+            transform.rotation = Quaternion.LookRotation(newDir);
+            Animation("move");
+        }
+        //Turn Right
+        else if (direction > 0)
+        {
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, right.transform.position, speed * Time.deltaTime, 0.0f);
+            transform.rotation = Quaternion.LookRotation(newDir);
+            Animation("move");
+        }
+        else if (direction == 0)
+        {
+            transform.rotation = Quaternion.LookRotation(new Vector3(0,0,0));
+            Animation("idle");
+        }
         rigid.AddForce(movement);
     }
 
-    void Animation()
+    public void Animation(string animation)
     {
         //Set Animation State
         //IDLE
@@ -188,6 +214,30 @@ public class player : MonoBehaviour
         //JUMP
         //WIN
         //LOOSE
+        if (animation == "jump")
+        {
+            animator.Play("jump");
+        }
+        else if (animation == "idle")
+        {
+            animator.Play("idle");
+        }
+        else if (animation == "move")
+        {
+            animator.Play("walk");
+        }
+        else if (animation == "win")
+        {
+            animator.Play("win");
+        }
+        else if (animation == "loose")
+        {
+            animator.Play("loose");
+        }
+        else if (animation == "hit")
+        {
+            animator.Play("hit");
+        }
 
 
 
@@ -201,6 +251,14 @@ public class player : MonoBehaviour
     void UnPauseGame()
     {
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Ball")
+        {
+            Animation("hit");
+        }
     }
 
     private void OnTriggerStay(Collider other)
